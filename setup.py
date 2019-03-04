@@ -12,7 +12,7 @@ setup(
     version=version,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[],
+    install_requires=['flask', 'pyyaml'],
     author='Kentaro Wada',
     author_email='www.kentaro.wada@gmail.com',
     description='Chainer log browser.',
