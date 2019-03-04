@@ -37,7 +37,3 @@ def index():
 def logs(log_dir, filename):
     root_dir = osp.abspath('logs')
     return flask.send_from_directory(osp.join(root_dir, log_dir), filename)
-
-
-def main():
-    app.run(debug=True)

@@ -29,5 +29,5 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-    entry_points={'console_scripts': ['chainerlg=chainerlg:main']},
+    entry_points={'console_scripts': ['chainerlg=chainerlg.cli:main']},
 )
