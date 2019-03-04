@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import os.path as osp
 
@@ -41,4 +39,5 @@ def logs(log_dir, filename):
     return flask.send_from_directory(osp.join(root_dir, log_dir), filename)
 
 
-app.run(debug=True)
+def main():
+    app.run(debug=True)
