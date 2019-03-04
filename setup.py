@@ -1,10 +1,27 @@
 from __future__ import print_function
 
+import shlex
+import subprocess
+
 from setuptools import find_packages
 from setuptools import setup
 
 
-version = '0.1'
+def githash():
+    cmd = 'git log -1 --format="%h"'
+    try:
+        hash_ = subprocess.check_output(shlex.split(cmd)).decode().strip()
+    except subprocess.CalledProcessError:
+        hash_ = None
+    return hash_
+
+
+version = '0.1.0-0'
+
+
+hash_ = githash()
+if hash_ is not None:
+    version = '%s.%s' % (version, hash_)
 
 
 setup(
