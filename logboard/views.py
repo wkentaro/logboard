@@ -16,7 +16,7 @@ app = flask.Flask(__name__)
 @app.route('/')
 def index():
     root_dir = osp.abspath('logs')
-    log_dirs = os.listdir(root_dir)
+    log_dirs = sorted(os.listdir(root_dir))
 
     # static folder
     app.config['STATIC_FOLDER'] = root_dir
