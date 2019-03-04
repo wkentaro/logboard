@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style>
+    .text-small {
+      font-size: 12px;
+    }
+  </style>
+  <script>
+    setInterval(function () { location.reload(); }, 10000);
+  </script>
+</head>
+
+<div class="container-fluid">
+
+  <h1 class="display-4 mb-3">
+    <a href="/">Logs</a>{% if request.args.log_dir %}: {{ request.args.log_dir }}{% endif %}
+  </h1>
+
+  <h6 class="mb-3">
+    Root Directory: <code>({{ root_dir }})</code>
+  </h6>
+
+  <div class="card mb-3">
+    <div class="card-header">
+      Logs
+    </div>
+    <div class="card-body p-0 table-responsive">
+      <table class="table table-bordered mb-0">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          {% for key in params_keys %}
+          <th>{{ key }}</th>
+          {% endfor %}
+        </tr>
+        {% for log_dir in log_dirs %}
+        {% if request.args.log_dir == log_dir %}
+        <tr class="table-active">
+        {% else %}
+        <tr>
+        {% endif %}
+          <td>{{ loop.index }}</td>
+          {% if request.args.log_dir == log_dir %}
+          <td>{{ log_dir }}</td>
+          {% else %}
+          <td><a href="{{ url_for(request.endpoint, log_dir=log_dir) }}">{{ log_dir }}</a></td>
+          {% endif %}
+
+          {% set params = params_data[log_dir] %}
+          {% for key in params_keys %}
+          <td>{{ params[key] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+  {% if request.args.log_dir %}
+
+  <div class="card mb-3">
+    <div class="card-header">Params <code>(params.yaml)</code></div>
+    <div class="card-body table-responsive p-0">
+      <table class="table table-bordered mb-0">
+        {% set params = params_data[request.args.log_dir] %}
+        {% for key, value in params.items() %}
+        <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-header">Loss Plot <code>(loss.png)</code></div>
+    <div class="card-body">
+      <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename='loss.png') }}" class="img-fluid" onerror="this.style.display='none'">
+    </div>
+  </div>
+
+  {% endif %}
+
+</div>
+
+</html>
