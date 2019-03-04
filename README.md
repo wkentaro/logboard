@@ -10,4 +10,7 @@
 ## Description
 
 Inspired by [grip](https://github.com/joeyespo/grip) and [notable](https://github.com/notable/notable),
-both of which serves light-weight GUI by only using static files (e.g., markdown files) to generate graphics.
+both of which serves light-weight GUI by
+
+- only using static files (e.g., markdown files without DB);
+- single command (e.g., `grip README.md` and `chainerlg logs/`).
