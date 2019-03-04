@@ -6,6 +6,10 @@
   Tool to View Logs on Browser.
 </h6>
 
+<div align="center">
+  <img src=".readme/overview.png" width="650px">
+</div>
+
 
 ## Description
 
