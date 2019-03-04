@@ -2,6 +2,7 @@ try:
     from configparser import ConfigParser
 except ImportError:
     from ConfigParser import ConfigParser
+import datetime
 import os
 import os.path as osp
 
@@ -44,6 +45,7 @@ def index():
 
     return flask.render_template(
         'index.html',
+        timestamp=datetime.datetime.now(),
         root_dir=root_dir,
         log_dirs=log_dirs,
         params_keys=sorted(params_keys),
