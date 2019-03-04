@@ -12,7 +12,7 @@ setup(
     version=version,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=open('requirements.txt').readlines(),
+    install_requires=[],
     author='Kentaro Wada',
     author_email='www.kentaro.wada@gmail.com',
     description='Chainer log browser.',
