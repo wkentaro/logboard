@@ -1,3 +1,7 @@
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
 import os
 import os.path as osp
 
@@ -13,8 +17,20 @@ def index():
     root_dir = osp.abspath('logs')
     log_dirs = os.listdir(root_dir)
 
+    # static folder
     app.config['STATIC_FOLDER'] = root_dir
 
+    # config
+    config = ConfigParser()
+    config.read('.chainerlg')
+    try:
+        section = config['chainerlg']
+        hide = set(section.get('hide').split(','))
+        hide = set(filter(None, hide))
+    except KeyError:
+        hide = set()
+
+    # params
     params_keys = set()
     params_data = {}
     for log_dir in log_dirs:
@@ -24,11 +40,13 @@ def index():
         params_keys = set(params.keys()) | params_keys
         params_data[log_dir] = params
 
+    params_keys = params_keys ^ hide
+
     return flask.render_template(
         'index.html',
         root_dir=root_dir,
         log_dirs=log_dirs,
-        params_keys=params_keys,
+        params_keys=sorted(params_keys),
         params_data=params_data,
     )
 
