@@ -13,6 +13,26 @@ import yaml
 app = flask.Flask(__name__)
 
 
+def get_config():
+    config = {
+        'hide': set(),
+        'figures': ['loss.png'],
+    }
+
+    parser = ConfigParser()
+    parser.read('.chainerlg')
+
+    try:
+        section = parser['chainerlg']
+    except KeyError:
+        return config
+
+    config['hide'] = set(filter(None, section.get('hide').split(',')))
+    config['figures'] = filter(None, section.get('figures').split(','))
+
+    return config
+
+
 @app.route('/')
 def index():
     root_dir = osp.abspath('logs')
@@ -22,14 +42,7 @@ def index():
     app.config['STATIC_FOLDER'] = root_dir
 
     # config
-    config = ConfigParser()
-    config.read('.chainerlg')
-    try:
-        section = config['chainerlg']
-        hide = set(section.get('hide').split(','))
-        hide = set(filter(None, hide))
-    except KeyError:
-        hide = set()
+    config = get_config()
 
     # params
     params_keys = set()
@@ -41,7 +54,13 @@ def index():
         params_keys = set(params.keys()) | params_keys
         params_data[log_dir] = params
 
-    params_keys = params_keys ^ hide
+    if 'log_dir' in flask.request.args and \
+            flask.request.args['log_dir'] not in params_data:
+        args = dict(flask.request.args)
+        args.pop('log_dir')
+        return flask.redirect(flask.url_for('index', **args))
+
+    params_keys = params_keys ^ config['hide']
 
     return flask.render_template(
         'index.html',
@@ -50,6 +69,7 @@ def index():
         log_dirs=log_dirs,
         params_keys=sorted(params_keys),
         params_data=params_data,
+        figures=config['figures'],
     )
 
 

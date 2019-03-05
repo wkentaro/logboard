@@ -25,9 +25,7 @@
   </h6>
 
   <div class="card mb-3">
-    <div class="card-header">
-      Logs
-    </div>
+    <div class="card-header"><code>Logs</code></div>
     <div class="card-body p-0 table-responsive">
       <table class="table table-bordered mb-0">
         <tr>
@@ -63,7 +61,7 @@
   {% if request.args.log_dir %}
 
   <div class="card mb-3">
-    <div class="card-header">Params <code>(params.yaml)</code></div>
+    <div class="card-header"><code>params.yaml</code></div>
     <div class="card-body table-responsive p-0">
       <table class="table table-bordered mb-0">
         {% set params = params_data[request.args.log_dir] %}
@@ -74,11 +72,17 @@
     </div>
   </div>
 
-  <div class="card mb-3">
-    <div class="card-header">Loss Plot <code>(loss.png)</code></div>
-    <div class="card-body">
-      <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename='loss.png', timestamp=timestamp.strftime('%Y%m%d_%H%M%S')) }}" class="img-fluid" onerror="this.style.display='none'">
+  <div class="row">
+    {% for figure in figures %}
+    <div class="col-md-6">
+      <div class="card mb-3">
+        <div class="card-header"><code>{{ figure }}</code></div>
+        <div class="card-body">
+          <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename=figure, timestamp=timestamp.strftime('%Y%m%d_%H%M%S')) }}" class="img-fluid" onerror="this.style.display='none'">
+        </div>
+      </div>
     </div>
+    {% endfor %}
   </div>
 
   {% endif %}
