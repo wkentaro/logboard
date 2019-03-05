@@ -65,7 +65,7 @@
     <div class="card-body table-responsive p-0">
       <table class="table table-bordered mb-0">
         {% set args = args_data[request.args.log_dir] %}
-        {% for key, value in args.items() %}
+        {% for key, value in args.items() | sort %}
         <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
         {% endfor %}
       </table>
