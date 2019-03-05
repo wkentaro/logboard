@@ -3,11 +3,11 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 import datetime
+import json
 import os
 import os.path as osp
 
 import flask
-import yaml
 
 
 app = flask.Flask(__name__)
@@ -15,20 +15,24 @@ app = flask.Flask(__name__)
 
 def get_config():
     config = {
-        'hide': set(),
-        'figures': ['loss.png'],
+        '-summary': set(),
+        'figure': ['loss.png'],
     }
 
     parser = ConfigParser()
     parser.read('.chainerlg')
 
-    try:
-        section = parser['chainerlg']
-    except KeyError:
-        return config
+    section = parser['chainerlg']
 
-    config['hide'] = set(filter(None, section.get('hide').split(',')))
-    config['figures'] = filter(None, section.get('figures').split(','))
+    try:
+        config['-summary'] = set(filter(None, section['-summary'].split(',')))
+    except KeyError:
+        pass
+
+    try:
+        config['figure'] = filter(None, section['figure'].split(','))
+    except KeyError:
+        pass
 
     return config
 
@@ -45,31 +49,31 @@ def index():
     config = get_config()
 
     # params
-    params_keys = set()
-    params_data = {}
+    args_keys = set()
+    args_data = {}
     for log_dir in log_dirs:
-        params_file = osp.join(root_dir, log_dir, 'params.yaml')
-        with open(params_file) as f:
-            params = yaml.load(f)
-        params_keys = set(params.keys()) | params_keys
-        params_data[log_dir] = params
+        args_file = osp.join(root_dir, log_dir, 'args')
+        with open(args_file) as f:
+            args = json.load(f)
+        args_keys = set(args.keys()) | args_keys
+        args_data[log_dir] = args
 
     if 'log_dir' in flask.request.args and \
-            flask.request.args['log_dir'] not in params_data:
-        args = dict(flask.request.args)
-        args.pop('log_dir')
-        return flask.redirect(flask.url_for('index', **args))
+            flask.request.args['log_dir'] not in args_data:
+        request_args = dict(flask.request.args)
+        request_args.pop('log_dir')
+        return flask.redirect(flask.url_for('index', **request_args))
 
-    params_keys = params_keys ^ config['hide']
+    args_keys = args_keys ^ config['-summary']
 
     return flask.render_template(
         'index.html',
         timestamp=datetime.datetime.now(),
         root_dir=root_dir,
         log_dirs=log_dirs,
-        params_keys=sorted(params_keys),
-        params_data=params_data,
-        figures=config['figures'],
+        args_keys=sorted(args_keys),
+        args_data=args_data,
+        figures=config['figure'],
     )
 
 

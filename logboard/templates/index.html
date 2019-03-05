@@ -25,13 +25,13 @@
   </h6>
 
   <div class="card mb-3">
-    <div class="card-header"><code>Logs</code></div>
+    <div class="card-header"><code>summary</code></div>
     <div class="card-body p-0 table-responsive">
       <table class="table table-bordered mb-0">
         <tr>
           <th>#</th>
           <th>Name</th>
-          {% for key in params_keys %}
+          {% for key in args_keys %}
           <th>{{ key }}</th>
           {% endfor %}
         </tr>
@@ -48,9 +48,9 @@
           <td><a href="{{ url_for(request.endpoint, log_dir=log_dir) }}">{{ log_dir }}</a></td>
           {% endif %}
 
-          {% set params = params_data[log_dir] %}
-          {% for key in params_keys %}
-          <td>{{ params[key] }}</td>
+          {% set args = args_data[log_dir] %}
+          {% for key in args_keys %}
+          <td>{{ args[key] }}</td>
           {% endfor %}
         </tr>
         {% endfor %}
@@ -61,11 +61,11 @@
   {% if request.args.log_dir %}
 
   <div class="card mb-3">
-    <div class="card-header"><code>params.yaml</code></div>
+    <div class="card-header"><code>args.yaml</code></div>
     <div class="card-body table-responsive p-0">
       <table class="table table-bordered mb-0">
-        {% set params = params_data[request.args.log_dir] %}
-        {% for key, value in params.items() %}
+        {% set args = args_data[request.args.log_dir] %}
+        {% for key, value in args.items() %}
         <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
         {% endfor %}
       </table>
