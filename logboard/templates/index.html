@@ -48,9 +48,9 @@
           <td><a href="{{ url_for(request.endpoint, log_dir=log_dir) }}">{{ log_dir }}</a></td>
           {% endif %}
 
-          {% set args = args_data[log_dir] %}
+          {% set args = args_data.get(log_dir, {}) %}
           {% for key in args_keys %}
-          <td>{{ args.get(key) }}</td>
+          <td>{{ args.get(key, '') }}</td>
           {% endfor %}
         </tr>
         {% endfor %}
