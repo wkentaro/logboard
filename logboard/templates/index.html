@@ -50,7 +50,7 @@
 
           {% set args = args_data[log_dir] %}
           {% for key in args_keys %}
-          <td>{{ args[key] }}</td>
+          <td>{{ args.get(key) }}</td>
           {% endfor %}
         </tr>
         {% endfor %}

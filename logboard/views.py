@@ -53,8 +53,11 @@ def index():
     args_data = {}
     for log_dir in log_dirs:
         args_file = osp.join(root_dir, log_dir, 'args')
-        with open(args_file) as f:
-            args = json.load(f)
+        try:
+            with open(args_file) as f:
+                args = json.load(f)
+        except IOError:
+            continue
         args_keys = set(args.keys()) | args_keys
         args_data[log_dir] = args
 
