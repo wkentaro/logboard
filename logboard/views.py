@@ -97,7 +97,7 @@ def index():
         return flask.redirect(flask.url_for('index', **request_args))
 
     for pattern in config['-summary']:
-        for key in summary_keys:
+        for key in summary_keys[:]:
             if re.match(pattern, key):
                 summary_keys.remove(key)
 
