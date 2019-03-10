@@ -39,7 +39,7 @@ def get_config():
 
 @app.route('/')
 def index():
-    root_dir = osp.abspath('logs')
+    root_dir = osp.abspath(app.config['logdir'])
     log_dirs = sorted(os.listdir(root_dir))
 
     # static folder
@@ -82,5 +82,5 @@ def index():
 
 @app.route('/logs/<log_dir>/<path:filename>')
 def logs(log_dir, filename):
-    root_dir = osp.abspath('logs')
+    root_dir = osp.abspath(app.config['logdir'])
     return flask.send_from_directory(osp.join(root_dir, log_dir), filename)
