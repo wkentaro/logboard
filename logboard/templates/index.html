@@ -9,6 +9,7 @@
       font-size: 12px;
     }
   </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
     setInterval(function () { location.reload(); }, 60000);  // 1min
   </script>
@@ -16,7 +17,7 @@
 
 <div class="container-fluid">
 
-  <h1 class="display-4 mb-3">
+  <h1 class="display-5 mb-3">
     <a href="/">Logs</a>{% if request.args.log_dir %}: {{ request.args.log_dir }}{% endif %}
   </h1>
 
@@ -27,7 +28,7 @@
   <div class="card mb-3">
     <div class="card-header"><code>summary</code></div>
     <div class="card-body p-0 table-responsive">
-      <table class="table table-bordered mb-0">
+      <table class="table table-sm table-bordered mb-0">
         <tr>
           <th>#</th>
           <th>Name</th>
@@ -60,10 +61,24 @@
 
   {% if request.args.log_dir %}
 
-  <div class="card mb-3">
-    <div class="card-header"><code>args.yaml</code></div>
-    <div class="card-body table-responsive p-0">
-      <table class="table table-bordered mb-0">
+  <script>
+    function toggleDisplay(selector) {
+      var element = $(selector);
+      if (element.attr('style')) {
+        element.show();
+      } else {
+        element.hide();
+      }
+    }
+  </script>
+
+  <div class="card mb-3" id='args'>
+    <div class="card-header">
+      <code>args.yaml</code>
+      <button onclick="toggleDisplay('#args > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
+    </div>
+    <div class="card-body table-responsive p-0" style="display: none;">
+      <table class="table table-sm table-bordered mb-0">
         {% set args = args_data[request.args.log_dir] %}
         {% for key, value in args.items() | sort %}
         <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
