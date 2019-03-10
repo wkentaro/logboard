@@ -1,2 +1,2 @@
 [chainerlg]
--summary=out,timestamp,loglevel,gpu,seed
+-summary=out,timestamp,loglevel,gpu,seed,lr .*,.*main/loss.*(max)

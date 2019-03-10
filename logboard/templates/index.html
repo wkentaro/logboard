@@ -25,12 +25,12 @@
   <div class="card mb-3">
     <div class="card-header"><code>summary</code></div>
     <div class="card-body p-0 table-responsive">
-      <table class="table table-sm table-bordered mb-0">
+      <table class="table table-sm table-bordered text-center mb-0">
         <tr>
-          <th>#</th>
-          <th>Name</th>
-          {% for key in args_keys %}
-          <th>{{ key }}</th>
+          <th style="vertical-align: middle;">#</th>
+          <th style="vertical-align: middle;">log_dir</th>
+          {% for key in summary_keys %}
+          <th style="vertical-align: middle;">{{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}</th>
           {% endfor %}
         </tr>
         {% for log_dir in log_dirs %}
@@ -40,15 +40,16 @@
         <tr>
         {% endif %}
           <td>{{ loop.index }}</td>
+
           {% if request.args.log_dir == log_dir %}
           <td>{{ log_dir }}</td>
           {% else %}
           <td><a href="{{ url_for(request.endpoint, log_dir=log_dir) }}">{{ log_dir }}</a></td>
           {% endif %}
 
-          {% set args = args_data.get(log_dir, {}) %}
-          {% for key in args_keys %}
-          <td>{{ args.get(key, '') }}</td>
+          {% set summary = summary_data.get(log_dir, {}) %}
+          {% for key in summary_keys %}
+          <td>{{ summary.get(key, '') }}</td>
           {% endfor %}
         </tr>
         {% endfor %}
@@ -76,7 +77,7 @@
     </div>
     <div class="card-body table-responsive p-0" style="display: none;">
       <table class="table table-sm table-bordered mb-0">
-        {% set args = args_data[request.args.log_dir] %}
+        {% set args = summary_data[request.args.log_dir] %}
         {% for key, value in args.items() | sort %}
         <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
         {% endfor %}
