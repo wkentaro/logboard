@@ -1,0 +1,13 @@
+{
+    "loglevel": "info",
+    "gpu": 1,
+    "seed": 0,
+    "class_ids": [
+        1
+    ],
+    "lr": 0.001,
+    "timestamp": "2019-03-10T09:38:29.691289",
+    "out": "/home/wkentaro/objslampp/examples/ycb_video/multi_view_pose_estimation/logs/20190310_093829.691289",
+    "hostname": "hoop",
+    "githash": "f766b97"
+}

@@ -1,2 +1,2 @@
 [chainerlg]
-hide=out,timestamp,loglevel
+-summary=out,timestamp,loglevel,gpu,seed
