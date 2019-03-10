@@ -10,9 +10,6 @@
     }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script>
-    setInterval(function () { location.reload(); }, 60000);  // 1min
-  </script>
 </head>
 
 <div class="container-fluid">
@@ -72,10 +69,10 @@
     }
   </script>
 
-  <div class="card mb-3" id='args'>
+  <div class="card mb-3" id='args-DOT-yaml'>
     <div class="card-header">
       <code>args.yaml</code>
-      <button onclick="toggleDisplay('#args > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
+      <button onclick="toggleDisplay('#args-DOT-yaml > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
     </div>
     <div class="card-body table-responsive p-0" style="display: none;">
       <table class="table table-sm table-bordered mb-0">
@@ -90,9 +87,12 @@
   <div class="row">
     {% for figure in figures %}
     <div class="col-md-6">
-      <div class="card mb-3">
-        <div class="card-header"><code>{{ figure }}</code></div>
-        <div class="card-body">
+      <div class="card mb-3" id="{{ figure.replace('.', '-DOT-') }}">
+        <div class="card-header">
+          <code>{{ figure }}</code>
+          <button onclick="toggleDisplay('#{{ figure.replace('.', '-DOT-') }} > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
+        </div>
+        <div class="card-body" style="display: none;">
           <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename=figure, timestamp=timestamp.strftime('%Y%m%d_%H%M%S')) }}" class="img-fluid" onerror="this.style.display='none'">
         </div>
       </div>
