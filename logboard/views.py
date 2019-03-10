@@ -52,6 +52,7 @@ def index():
 
     # params
     summary_keys = ['epoch', 'iteration', 'elapsed_time']
+    args_keys = []
     summary_data = {}
     for log_dir in log_dirs:
         args_file = osp.join(root_dir, log_dir, 'args')
@@ -63,6 +64,7 @@ def index():
         for key in args:
             if key not in summary_keys:
                 summary_keys.append(key)
+                args_keys.append(key)
         summary_data[log_dir] = args
 
         log_file = osp.join(root_dir, log_dir, 'log')
@@ -108,6 +110,7 @@ def index():
         log_dirs=log_dirs,
         summary_keys=summary_keys,
         summary_data=summary_data,
+        args_keys=args_keys,
         figures=config['figure'],
     )
 

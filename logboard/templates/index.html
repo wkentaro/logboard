@@ -22,15 +22,33 @@
     Root Directory: <code>({{ root_dir }})</code>
   </h6>
 
+<style>
+table.table-bordered td {
+  border:1px solid black !important;
+}
+table.table-bordered th {
+  border:1px solid black !important;
+}
+</style>
+
   <div class="card mb-3">
     <div class="card-header"><code>summary</code></div>
     <div class="card-body p-0 table-responsive">
-      <table class="table table-sm table-bordered text-center mb-0">
+      <table class="table table-hover table-sm table-bordered text-center mb-0">
         <tr>
-          <th style="vertical-align: middle;">#</th>
-          <th style="vertical-align: middle;">log_dir</th>
+          <th class="table-dark" style="vertical-align: middle;">#</th>
+          <th class="table-dark" style="vertical-align: middle;">log_dir</th>
           {% for key in summary_keys %}
-          <th style="vertical-align: middle;">{{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}</th>
+          {% if key in ['epoch', 'iteration', 'elapsed_time'] %}
+          {% set class = 'bg-danger' %}
+          {% elif key in args_keys %}
+          {% set class = 'bg-success' %}
+          {% else %}
+          {% set class = 'bg-primary' %}
+          {% endif %}
+          <th class="{{ class }}" style="vertical-align: middle;">
+            {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
+          </th>
           {% endfor %}
         </tr>
         {% for log_dir in log_dirs %}
@@ -70,16 +88,16 @@
     }
   </script>
 
-  <div class="card mb-3" id='args-DOT-yaml'>
+  <div class="card mb-3" id='args'>
     <div class="card-header">
-      <code>args.yaml</code>
-      <button onclick="toggleDisplay('#args-DOT-yaml > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
+      <code>args</code>
+      <button onclick="toggleDisplay('#args > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
     </div>
     <div class="card-body table-responsive p-0" style="display: none;">
       <table class="table table-sm table-bordered mb-0">
-        {% set args = summary_data[request.args.log_dir] %}
-        {% for key, value in args.items() | sort %}
-        <tr><th>{{ key }}</th><td>{{ value }}</td></tr>
+        {% set summary = summary_data[request.args.log_dir] %}
+        {% for key in args_keys %}
+        <tr><th>{{ key }}</th><td>{{ summary[key] }}</td></tr>
         {% endfor %}
       </table>
     </div>
