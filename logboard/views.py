@@ -19,6 +19,7 @@ def get_config():
     config = {
         '-summary': set(),
         'figure': ['loss.png'],
+        'scale': {},
     }
 
     parser = ConfigParser()
@@ -33,6 +34,13 @@ def get_config():
 
     try:
         config['figure'] = filter(None, section['figure'].split(','))
+    except KeyError:
+        pass
+
+    try:
+        for s in filter(None, section['scale'].split(',')):
+            key, value = s.split('=')
+            config['scale'][key] = float(value)
     except KeyError:
         pass
 
@@ -86,12 +94,19 @@ def index():
             if col in ['epoch', 'iteration', 'elapsed_time']:
                 continue
 
+            scale = config['scale'].get(col)
+            if scale is None:
+                stat_template = '{:.2g}'
+                scale = 1.0
+            else:
+                stat_template = '{:.1f}'
+
             key = '{} (max)'.format(col)
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmax()
             datum[key] = (
-                '{:.4g}'.format(log[col][index]),
+                stat_template.format(log[col][index] * scale),
                 log['iteration'][index]
             )
 
@@ -100,7 +115,7 @@ def index():
                 summary_keys.append(key)
             index = log[col].idxmin()
             datum[key] = (
-                '{:.4g}'.format(log[col][index]),
+                stat_template.format(log[col][index] * scale),
                 log['iteration'][index]
             )
 
