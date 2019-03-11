@@ -77,7 +77,7 @@ table.table-bordered th {
           {% if value is iterable and value is not string %}
           <td>{{ value[0] }}</td><td>({{ value[1] }})</td>
           {% else %}
-          <td>{{ value }}</td>
+          <td><a href="?q={{ '%s==\'%s\''|format(key, value) }}">{{ value }}</a></td>
           {% endif %}
           {% endfor %}
         </tr>
