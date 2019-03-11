@@ -53,7 +53,9 @@ table.table-bordered th {
             <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q) }}">
               <i class="fas fa-caret-up"></i>
             </a>
+            <br/>
             log_dir
+            <br/>
             {% if args_sort == 'log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
             <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, log_dir=args_log_dir, q=args_q) }}">
               <i class="fas fa-caret-down"></i>
@@ -71,21 +73,17 @@ table.table-bordered th {
           {% set colspan = 2 %}
           {% endif %}
           <th class="{{ class }} text-white" style="vertical-align: middle;" colspan="{{ colspan }}">
-            <ul class="list-inline mb-0">
-              <li class="list-inline-item">
-                {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q) }}">
-                  <i class="fas fa-caret-up"></i>
-                </a>
-              </li>
-              <li class="list-inline-item">{{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}</li>
-              <li class="list-inline-item">
-                {% if args_sort == key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q) }}">
-                  <i class="fas fa-caret-down"></i>
-                </a>
-              </li>
-            </ul>
+            {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q) }}">
+              <i class="fas fa-caret-up"></i>
+            </a>
+            <br/>
+            {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
+            <br/>
+            {% if args_sort == key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q) }}">
+              <i class="fas fa-caret-down"></i>
+            </a>
           </th>
           {% endfor %}
         </tr>
