@@ -94,37 +94,57 @@ def index():
             if col in ['epoch', 'iteration', 'elapsed_time']:
                 continue
 
-            scale = config['scale'].get(col)
-            if scale is None:
-                stat_template = '{:.2g}'
-                scale = 1.0
-            else:
-                stat_template = '{:.1f}'
-
             key = '{} (max)'.format(col)
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmax()
-            datum[key] = (
-                stat_template.format(log[col][index] * scale),
-                log['iteration'][index]
-            )
+            datum[key] = (log[col][index], log['iteration'][index])
 
             key = '{} (min)'.format(col)
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmin()
-            datum[key] = (
-                stat_template.format(log[col][index] * scale),
-                log['iteration'][index]
-            )
+            datum[key] = (log[col][index], log['iteration'][index])
 
-        for key, value in list(datum.items()):
-            if not isinstance(value, tuple):
-                datum[key] = str(value)
         data.append(datum)
 
     df = pandas.DataFrame(data=data)
+
+    if 'sort' in flask.request.args:
+        key = flask.request.args['sort']
+        ascending = True
+        if key.startswith('-'):
+            key = key[1:]
+            ascending = False
+        df = df.sort_values(by=key, ascending=ascending)
+
+    # format
+    for col in df.columns:
+        if col.endswith(' (min)') or col.endswith(' (max)'):
+            key = col[:-6]
+            if key in config['scale']:
+                scale = config['scale'][key]
+                stat_template = '{:.1f}'
+            else:
+                scale = 1.0
+                stat_template = '{:.2g}'
+            values = []
+            for value in df[col].values:
+                values.append((
+                    stat_template.format(value[0] * scale),
+                    value[1]
+                ))
+            df[col] = values
+        elif isinstance(df[col].iloc[0], datetime.timedelta):
+            values = []
+            for value in df[col]:
+                value = datetime.timedelta(seconds=value.total_seconds())
+                value = str(value)
+                values.append(value)
+            df[col] = values
+        else:
+            df[col] = df[col].astype(str)
+
     if 'q' in flask.request.args:
         try:
             df = df.query(flask.request.args['q'])

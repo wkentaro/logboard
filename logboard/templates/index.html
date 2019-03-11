@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <title>ChainerLG</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   <style>
     .text-small {
       font-size: 12px;
@@ -13,10 +14,14 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
+{% set args_log_dir = request.args.get('log_dir') %}
+{% set args_sort = request.args.get('sort') %}
+{% set args_q = request.args.get('q') %}
+
 <div class="container-fluid">
 
   <h1 class="display-5 mb-3">
-    <a href="/">ChainerLG</a>{% if request.args.log_dir %}: {{ request.args.log_dir }}{% endif %}
+    <a href="/">ChainerLG</a>{% if args_log_dir %}: {{ args_log_dir }}{% endif %}
   </h1>
 
   <h6 class="mb-3">
@@ -43,7 +48,17 @@ table.table-bordered th {
     <div class="card-body p-0 table-responsive">
       <table class="table table-hover table-sm table-bordered text-center mb-0">
         <tr>
-          <th class="bg-dark text-white" style="vertical-align: middle;">log_dir</th>
+          <th class="bg-dark text-white" style="vertical-align: middle;">
+            {% if args_sort == '-log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q) }}">
+              <i class="fas fa-caret-up"></i>
+            </a>
+            log_dir
+            {% if args_sort == 'log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, log_dir=args_log_dir, q=args_q) }}">
+              <i class="fas fa-caret-down"></i>
+            </a>
+          </th>
           {% for key in summary_keys %}
           {% if key in ['epoch', 'iteration', 'elapsed_time'] %}
           {% set class = 'bg-danger' %}
@@ -56,7 +71,21 @@ table.table-bordered th {
           {% set colspan = 2 %}
           {% endif %}
           <th class="{{ class }} text-white" style="vertical-align: middle;" colspan="{{ colspan }}">
-            {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item">
+                {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q) }}">
+                  <i class="fas fa-caret-up"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">{{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}</li>
+              <li class="list-inline-item">
+                {% if args_sort == key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q) }}">
+                  <i class="fas fa-caret-down"></i>
+                </a>
+              </li>
+            </ul>
           </th>
           {% endfor %}
         </tr>
@@ -69,7 +98,7 @@ table.table-bordered th {
           {% if request.args.log_dir == log_dir %}
           <td>{{ log_dir }}</td>
           {% else %}
-          <td><a href="{{ url_for(request.endpoint, log_dir=log_dir) }}">{{ log_dir }}</a></td>
+          <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q) }}">{{ log_dir }}</a></td>
           {% endif %}
 
           {% set summary = summary_df[summary_df.log_dir == log_dir].iloc[0] %}
@@ -78,7 +107,7 @@ table.table-bordered th {
           {% if value is iterable and value is not string %}
           <td>{{ value[0] }}</td><td>({{ value[1] }})</td>
           {% else %}
-          <td><a href="?q={{ '%s==\'%s\''|format(key, value) }}">{{ value }}</a></td>
+          <td><a href="{{ url_for(request.endpoint, q='%s==\'%s\''|format(key, value), log_dir=args_log_dir, sort=args_sort) }}">{{ value }}</a></td>
           {% endif %}
           {% endfor %}
         </tr>
