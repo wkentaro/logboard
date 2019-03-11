@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>ChainerLG</title>
   <style>
     .text-small {
       font-size: 12px;
@@ -15,7 +16,7 @@
 <div class="container-fluid">
 
   <h1 class="display-5 mb-3">
-    <a href="/">Logs</a>{% if request.args.log_dir %}: {{ request.args.log_dir }}{% endif %}
+    <a href="/">ChainerLG</a>{% if request.args.log_dir %}: {{ request.args.log_dir }}{% endif %}
   </h1>
 
   <h6 class="mb-3">
@@ -42,7 +43,7 @@ table.table-bordered th {
     <div class="card-body p-0 table-responsive">
       <table class="table table-hover table-sm table-bordered text-center mb-0">
         <tr>
-          <th class="table-dark" style="vertical-align: middle;">log_dir</th>
+          <th class="bg-dark text-white" style="vertical-align: middle;">log_dir</th>
           {% for key in summary_keys %}
           {% if key in ['epoch', 'iteration', 'elapsed_time'] %}
           {% set class = 'bg-danger' %}
@@ -54,7 +55,7 @@ table.table-bordered th {
           {% set class = 'bg-primary' %}
           {% set colspan = 2 %}
           {% endif %}
-          <th class="{{ class }}" style="vertical-align: middle;" colspan="{{ colspan }}">
+          <th class="{{ class }} text-white" style="vertical-align: middle;" colspan="{{ colspan }}">
             {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
           </th>
           {% endfor %}
