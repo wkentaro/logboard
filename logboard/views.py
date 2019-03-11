@@ -138,8 +138,11 @@ def index():
         elif isinstance(df[col].iloc[0], datetime.timedelta):
             values = []
             for value in df[col]:
-                value = datetime.timedelta(seconds=value.total_seconds())
-                value = str(value)
+                try:
+                    value = datetime.timedelta(seconds=value.total_seconds())
+                    value = str(value)
+                except ValueError:
+                    pass
                 values.append(value)
             df[col] = values
         else:
