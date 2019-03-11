@@ -46,12 +46,15 @@ table.table-bordered th {
           {% for key in summary_keys %}
           {% if key in ['epoch', 'iteration', 'elapsed_time'] %}
           {% set class = 'bg-danger' %}
+          {% set colspan = 1 %}
           {% elif key in args_keys %}
           {% set class = 'bg-success' %}
+          {% set colspan = 1 %}
           {% else %}
           {% set class = 'bg-primary' %}
+          {% set colspan = 2 %}
           {% endif %}
-          <th class="{{ class }}" style="vertical-align: middle;">
+          <th class="{{ class }}" style="vertical-align: middle;" colspan="{{ colspan }}">
             {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
           </th>
           {% endfor %}
@@ -70,7 +73,12 @@ table.table-bordered th {
 
           {% set summary = summary_df[summary_df.log_dir == log_dir].iloc[0] %}
           {% for key in summary_keys %}
-          <td>{{ summary.get(key, '') }}</td>
+          {% set value = summary[key] %}
+          {% if value is iterable and value is not string %}
+          <td>{{ value[0] }}</td><td>({{ value[1] }})</td>
+          {% else %}
+          <td>{{ value }}</td>
+          {% endif %}
           {% endfor %}
         </tr>
         {% endfor %}

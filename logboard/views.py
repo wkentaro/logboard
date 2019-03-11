@@ -54,7 +54,7 @@ def index():
     summary_keys = ['epoch', 'iteration', 'elapsed_time']
     args_keys = []
     data = []
-    for log_dir in log_dirs:
+    for log_dir in sorted(log_dirs):
         args_file = osp.join(root_dir, log_dir, 'args')
         try:
             with open(args_file) as f:
@@ -90,20 +90,23 @@ def index():
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmax()
-            datum[key] = '{:.5f} ({:d})'.format(
-                log[col][index], log['iteration'][index]
+            datum[key] = (
+                '{:.4g}'.format(log[col][index]),
+                log['iteration'][index]
             )
 
             key = '{} (min)'.format(col)
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmin()
-            datum[key] = '{:.5f} ({:d})'.format(
-                log[col][index], log['iteration'][index]
+            datum[key] = (
+                '{:.4g}'.format(log[col][index]),
+                log['iteration'][index]
             )
 
         for key, value in list(datum.items()):
-            datum[key] = str(value)
+            if not isinstance(value, tuple):
+                datum[key] = str(value)
         data.append(datum)
 
     df = pandas.DataFrame(data=data)
