@@ -4,6 +4,7 @@ except ImportError:
     from ConfigParser import ConfigParser
 import datetime
 import json
+import math
 import os
 import os.path as osp
 import re
@@ -78,6 +79,9 @@ def index():
         summary_data[log_dir]['iteration'] = log['iteration'].max()
         summary_data[log_dir]['elapsed_time'] = \
             datetime.timedelta(seconds=int(round(log['elapsed_time'].max())))
+
+        n_digits = int(math.log10(summary_data[log_dir]['iteration'])) + 1
+        stat_template = '{:.5f} ({:0%dd})' % n_digits
         for col in log.columns:
             if col in ['epoch', 'iteration', 'elapsed_time']:
                 continue
@@ -85,12 +89,18 @@ def index():
             key = '{} (max)'.format(col)
             if key not in summary_keys:
                 summary_keys.append(key)
-            summary_data[log_dir][key] = '{:.5f}'.format(log[col].max())
+            index = log[col].idxmax()
+            summary_data[log_dir][key] = stat_template.format(
+                log[col][index], log['iteration'][index]
+            )
 
             key = '{} (min)'.format(col)
             if key not in summary_keys:
                 summary_keys.append(key)
-            summary_data[log_dir][key] = '{:.5f}'.format(log[col].min())
+            index = log[col].idxmin()
+            summary_data[log_dir][key] = stat_template.format(
+                log[col][index], log['iteration'][index]
+            )
 
     if 'log_dir' in flask.request.args and \
             flask.request.args['log_dir'] not in summary_data:
