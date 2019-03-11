@@ -4,7 +4,6 @@ except ImportError:
     from ConfigParser import ConfigParser
 import datetime
 import json
-import math
 import os
 import os.path as osp
 import re
@@ -54,7 +53,7 @@ def index():
     # params
     summary_keys = ['epoch', 'iteration', 'elapsed_time']
     args_keys = []
-    summary_data = {}
+    data = []
     for log_dir in log_dirs:
         args_file = osp.join(root_dir, log_dir, 'args')
         try:
@@ -66,22 +65,23 @@ def index():
             if key not in summary_keys:
                 summary_keys.append(key)
                 args_keys.append(key)
-        summary_data[log_dir] = args
+        datum = args
+        datum['log_dir'] = log_dir
 
         log_file = osp.join(root_dir, log_dir, 'log')
         try:
             with open(log_file) as f:
                 log = json.load(f)
         except IOError:
+            data.append(datum)
             continue
+
         log = pandas.DataFrame(data=log)
-        summary_data[log_dir]['epoch'] = log['epoch'].max()
-        summary_data[log_dir]['iteration'] = log['iteration'].max()
-        summary_data[log_dir]['elapsed_time'] = \
+        datum['epoch'] = log['epoch'].max()
+        datum['iteration'] = log['iteration'].max()
+        datum['elapsed_time'] = \
             datetime.timedelta(seconds=int(round(log['elapsed_time'].max())))
 
-        n_digits = int(math.log10(summary_data[log_dir]['iteration'])) + 1
-        stat_template = '{:.5f} ({:0%dd})' % n_digits
         for col in log.columns:
             if col in ['epoch', 'iteration', 'elapsed_time']:
                 continue
@@ -90,7 +90,7 @@ def index():
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmax()
-            summary_data[log_dir][key] = stat_template.format(
+            datum[key] = '{:.5f} ({:d})'.format(
                 log[col][index], log['iteration'][index]
             )
 
@@ -98,12 +98,23 @@ def index():
             if key not in summary_keys:
                 summary_keys.append(key)
             index = log[col].idxmin()
-            summary_data[log_dir][key] = stat_template.format(
+            datum[key] = '{:.5f} ({:d})'.format(
                 log[col][index], log['iteration'][index]
             )
 
+        for key, value in list(datum.items()):
+            datum[key] = str(value)
+        data.append(datum)
+
+    df = pandas.DataFrame(data=data)
+    if 'q' in flask.request.args:
+        try:
+            df = df.query(flask.request.args['q'])
+        except Exception:
+            pass
+
     if 'log_dir' in flask.request.args and \
-            flask.request.args['log_dir'] not in summary_data:
+            flask.request.args['log_dir'] not in df.log_dir.values:
         request_args = dict(flask.request.args)
         request_args.pop('log_dir')
         return flask.redirect(flask.url_for('index', **request_args))
@@ -117,9 +128,8 @@ def index():
         'index.html',
         timestamp=datetime.datetime.now(),
         root_dir=root_dir,
-        log_dirs=log_dirs,
+        summary_df=df,
         summary_keys=summary_keys,
-        summary_data=summary_data,
         args_keys=args_keys,
         figures=config['figure'],
     )

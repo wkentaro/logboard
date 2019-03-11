@@ -31,12 +31,17 @@ table.table-bordered th {
 }
 </style>
 
+  <div class="mb-3">
+    <form class="form-group">
+      <input class="form-control" type="text" placeholder="Search (e.g., githash=f766b97)" name="q" value="{{ request.args.q }}" />
+    </form>
+  </div>
+
   <div class="card mb-3">
     <div class="card-header"><code>summary</code></div>
     <div class="card-body p-0 table-responsive">
       <table class="table table-hover table-sm table-bordered text-center mb-0">
         <tr>
-          <th class="table-dark" style="vertical-align: middle;">#</th>
           <th class="table-dark" style="vertical-align: middle;">log_dir</th>
           {% for key in summary_keys %}
           {% if key in ['epoch', 'iteration', 'elapsed_time'] %}
@@ -51,21 +56,19 @@ table.table-bordered th {
           </th>
           {% endfor %}
         </tr>
-        {% for log_dir in log_dirs %}
+        {% for log_dir in summary_df.log_dir %}
         {% if request.args.log_dir == log_dir %}
         <tr class="table-active">
         {% else %}
         <tr>
         {% endif %}
-          <td>{{ loop.index }}</td>
-
           {% if request.args.log_dir == log_dir %}
           <td>{{ log_dir }}</td>
           {% else %}
           <td><a href="{{ url_for(request.endpoint, log_dir=log_dir) }}">{{ log_dir }}</a></td>
           {% endif %}
 
-          {% set summary = summary_data.get(log_dir, {}) %}
+          {% set summary = summary_df[summary_df.log_dir == log_dir].iloc[0] %}
           {% for key in summary_keys %}
           <td>{{ summary.get(key, '') }}</td>
           {% endfor %}
@@ -95,7 +98,7 @@ table.table-bordered th {
     </div>
     <div class="card-body table-responsive p-0" style="display: none;">
       <table class="table table-sm table-bordered mb-0">
-        {% set summary = summary_data[request.args.log_dir] %}
+        {% set summary = summary_df[summary_df.log_dir == request.args.log_dir].iloc[0] %}
         {% for key in args_keys %}
         <tr><th>{{ key }}</th><td>{{ summary[key] }}</td></tr>
         {% endfor %}
