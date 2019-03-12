@@ -59,8 +59,8 @@ def index():
     config = get_config()
 
     # params
-    summary_keys = ['epoch', 'iteration', 'elapsed_time']
-    args_keys = []
+    args_keys = set()
+    log_keys = set()
     data = []
     for log_dir in sorted(log_dirs):
         args_file = osp.join(root_dir, log_dir, 'args')
@@ -69,10 +69,7 @@ def index():
                 args = json.load(f)
         except IOError:
             continue
-        for key in args:
-            if key not in summary_keys:
-                summary_keys.append(key)
-                args_keys.append(key)
+        args_keys = args_keys | set(args.keys())
         datum = args
         datum['log_dir'] = log_dir
 
@@ -95,18 +92,20 @@ def index():
                 continue
 
             key = '{} (max)'.format(col)
-            if key not in summary_keys:
-                summary_keys.append(key)
+            log_keys.add(key)
             index = log[col].idxmax()
             datum[key] = (log[col][index], log['iteration'][index])
 
             key = '{} (min)'.format(col)
-            if key not in summary_keys:
-                summary_keys.append(key)
+            log_keys.add(key)
             index = log[col].idxmin()
             datum[key] = (log[col][index], log['iteration'][index])
 
         data.append(datum)
+
+    summary_keys = ['epoch', 'iteration', 'elapsed_time']
+    summary_keys += sorted(args_keys)
+    summary_keys += sorted(log_keys)
 
     df = pandas.DataFrame(data=data)
 
