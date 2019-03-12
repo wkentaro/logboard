@@ -130,10 +130,13 @@ def index():
                 stat_template = '{:.2g}'
             values = []
             for value in df[col].values:
-                values.append((
-                    stat_template.format(value[0] * scale),
-                    value[1]
-                ))
+                if isinstance(value, tuple):
+                    values.append((
+                        stat_template.format(value[0] * scale),
+                        value[1]
+                    ))
+                else:
+                    values.append((value, float('nan')))
             df[col] = values
         elif isinstance(df[col].iloc[0], datetime.timedelta):
             values = []
