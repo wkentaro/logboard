@@ -62,15 +62,15 @@ table.table-bordered th {
             </a>
           </th>
           {% for key in summary_keys %}
-          {% if key in ['epoch', 'iteration', 'elapsed_time'] %}
-          {% set class = 'bg-danger' %}
-          {% set colspan = 1 %}
+          {% if key in log_keys %}
+          {% set class = 'bg-primary' %}
+          {% set colspan = 2 %}
           {% elif key in args_keys %}
           {% set class = 'bg-success' %}
           {% set colspan = 1 %}
           {% else %}
-          {% set class = 'bg-primary' %}
-          {% set colspan = 2 %}
+          {% set class = 'bg-danger' %}
+          {% set colspan = 1 %}
           {% endif %}
           <th class="{{ class }} text-white" style="vertical-align: middle;" colspan="{{ colspan }}">
             {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}

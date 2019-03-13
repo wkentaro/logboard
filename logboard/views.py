@@ -87,6 +87,13 @@ def index():
         datum['elapsed_time'] = \
             datetime.timedelta(seconds=int(round(log['elapsed_time'].max())))
 
+        now = datetime.datetime.now()
+        mtime = datetime.datetime.fromtimestamp(os.path.getmtime(log_file))
+        datum['last_modified'] = \
+            datetime.timedelta(
+                seconds=int(round((now - mtime).total_seconds()))
+            )
+
         for col in log.columns:
             if col in ['epoch', 'iteration', 'elapsed_time']:
                 continue
@@ -103,7 +110,7 @@ def index():
 
         data.append(datum)
 
-    summary_keys = ['epoch', 'iteration', 'elapsed_time']
+    summary_keys = ['epoch', 'iteration', 'elapsed_time', 'last_modified']
     summary_keys += sorted(args_keys)
     summary_keys += sorted(log_keys)
 
@@ -174,6 +181,7 @@ def index():
         summary_df=df,
         summary_keys=summary_keys,
         args_keys=args_keys,
+        log_keys=log_keys,
         figures=config['figure'],
     )
 
