@@ -89,7 +89,7 @@ def index():
 
         now = datetime.datetime.now()
         mtime = datetime.datetime.fromtimestamp(os.path.getmtime(log_file))
-        datum['last_modified'] = \
+        datum['updated_at'] = \
             datetime.timedelta(
                 seconds=int(round((now - mtime).total_seconds()))
             )
@@ -110,7 +110,7 @@ def index():
 
         data.append(datum)
 
-    summary_keys = ['epoch', 'iteration', 'elapsed_time', 'last_modified']
+    summary_keys = ['epoch', 'iteration', 'elapsed_time', 'updated_at']
     summary_keys += sorted(args_keys)
     summary_keys += sorted(log_keys)
 
