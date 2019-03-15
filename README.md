@@ -13,8 +13,9 @@
 
 ## Description
 
-Inspired by [grip](https://github.com/joeyespo/grip) and [notable](https://github.com/notable/notable),
-both of which serves light-weight GUI by
+Inspired by [tensorboard](https://github.com/tensorflow/tensorboard),
+[grip](https://github.com/joeyespo/grip) and [notable](https://github.com/notable/notable),
+all of which serve light-weight GUI by
 
 - only using static files (e.g., markdown files without DB);
-- single command (e.g., `grip README.md` and `chainerlg logs/`).
+- single command (e.g., `tensorboard --logdir logs/` and `grip README.md`).
