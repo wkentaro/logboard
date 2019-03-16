@@ -42,6 +42,10 @@ I expect this kind of feature will be included in `tensorboard` in the future.
 ```bash
 $ cd examples
 
+$ cat .logboard
+[logboard]
+-summary=out,timestamp,loglevel,gpu,seed,lr .*,.*main/loss.*(max)
+
 $ cat logs/20190310_093252.724597/args
 {
     "loglevel": "info",
