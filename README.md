@@ -7,6 +7,12 @@
 </h6>
 
 <div align="center">
+  <a href="https://travis-ci.com/wkentaro/logboard">
+    <img src="https://travis-ci.com/wkentaro/logboard.svg?token=zM5rExyvuRoJThsnqHAF&branch=master">
+  </a>
+
+  <br/>
+
   <img src=".readme/overview.png" width="60%">
 </div>
 
