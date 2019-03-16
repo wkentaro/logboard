@@ -7,7 +7,7 @@
     ],
     "lr": 0.001,
     "timestamp": "2019-03-10T09:32:52.724597",
-    "out": "/home/wkentaro/objslampp/examples/ycb_video/multi_view_pose_estimation/logs/20190310_093252.724597",
-    "hostname": "hoop",
+    "out": "/home/wkentaro/logboard/examples/logs/20190310_093252.724597",
+    "hostname": "computer1",
     "githash": "b48ce48"
 }

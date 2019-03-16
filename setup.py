@@ -25,14 +25,14 @@ if hash_ is not None:
 
 
 setup(
-    name='chainerlg',
+    name='logboard',
     version=version,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['flask', 'pandas', 'pyyaml'],
+    install_requires=['flask', 'pandas'],
     author='Kentaro Wada',
     author_email='www.kentaro.wada@gmail.com',
-    description='Chainer log browser.',
+    description='Monitor and Compare Logs on Browser.',
     url='http://github.com/wkentaro/chainer-logs',
     license='MIT',
     classifiers=[
@@ -46,5 +46,5 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-    entry_points={'console_scripts': ['chainerlg=chainerlg.cli:main']},
+    entry_points={'console_scripts': ['logboard=logboard.cli:main']},
 )

@@ -23,9 +23,9 @@ def get_config():
     }
 
     parser = ConfigParser()
-    parser.read('.chainerlg')
+    parser.read('.logboard')
 
-    section = parser['chainerlg']
+    section = parser['logboard']
 
     try:
         config['-summary'] = set(filter(None, section['-summary'].split(',')))
