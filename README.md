@@ -2,9 +2,9 @@
   logboard
 </h1>
 
-<h6 align="center">
+<h4 align="center">
   Monitor and Compare Logs on Browser.
-</h6>
+</h4>
 
 <div align="center">
   <a href="https://travis-ci.com/wkentaro/logboard">
