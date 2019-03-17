@@ -12,7 +12,7 @@ import flask
 import pandas
 
 
-app = flask.Flask(__name__)
+app = flask.Flask('logboard')
 
 
 def get_config():
@@ -89,10 +89,8 @@ def index():
 
         now = datetime.datetime.now()
         mtime = datetime.datetime.fromtimestamp(os.path.getmtime(log_file))
-        datum['updated_at'] = \
-            datetime.timedelta(
-                seconds=int(round((now - mtime).total_seconds()))
-            )
+        seconds = (now - mtime).total_seconds()
+        datum['updated_at'] = datetime.timedelta(seconds=int(round(seconds)))
 
         for col in log.columns:
             if col in ['epoch', 'iteration', 'elapsed_time']:
