@@ -99,12 +99,16 @@ def index():
             key = '{} (max)'.format(col)
             log_keys.add(key)
             index = log[col].idxmax()
-            datum[key] = (log[col][index], log['iteration'][index])
+            datum[key] = (
+                log[col][index], (log['epoch'][index], log['iteration'][index])
+            )
 
             key = '{} (min)'.format(col)
             log_keys.add(key)
             index = log[col].idxmin()
-            datum[key] = (log[col][index], log['iteration'][index])
+            datum[key] = (
+                log[col][index], (log['epoch'][index], log['iteration'][index])
+            )
 
         data.append(datum)
 
@@ -137,10 +141,10 @@ def index():
                 if isinstance(value, tuple):
                     values.append((
                         stat_template.format(value[0] * scale),
-                        value[1]
+                        value[1],
                     ))
                 else:
-                    values.append((value, float('nan')))
+                    values.append((value, (float('nan'), float('nan'))))
             df[col] = values
         elif isinstance(df[col].iloc[0], datetime.timedelta):
             values = []

@@ -108,7 +108,7 @@ table.table-bordered th {
           {% for key in summary_keys %}
           {% set value = summary[key] %}
           {% if value is iterable and value is not string %}
-          <td>{{ value[0] }}</td><td>({{ value[1] }})</td>
+          <td>{{ value[0] }}</td><td>{{ value[1] }}</td>
           {% else %}
           <td><a href="{{ url_for(request.endpoint, q='%s==\'%s\''|format(key, value), log_dir=args_log_dir, sort=args_sort) }}">{{ value }}</a></td>
           {% endif %}
