@@ -49,6 +49,9 @@ table.table-bordered th {
       <table class="table table-hover table-sm table-bordered text-center mb-0">
         <tr>
           <th class="bg-dark text-white" style="vertical-align: middle;">
+            #
+          </th>
+          <th class="bg-dark text-white" style="vertical-align: middle;">
             {% if args_sort == '-log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
             <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q) }}">
               <i class="fas fa-caret-up"></i>
@@ -94,10 +97,12 @@ table.table-bordered th {
         <tr>
         {% endif %}
           {% if request.args.log_dir == log_dir %}
-          <td>{{ log_dir }}</td>
+          <td>{{ loop.index }}</td>
           {% else %}
-          <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q) }}">{{ log_dir }}</a></td>
+          <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q) }}">{{ loop.index }}</a></td>
           {% endif %}
+
+          <td>{{ log_dir }}</td>
 
           {% set summary = summary_df[summary_df.log_dir == log_dir].iloc[0] %}
           {% for key in summary_keys %}
