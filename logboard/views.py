@@ -117,6 +117,8 @@ def index():
     summary_keys += sorted(log_keys)
 
     df = pandas.DataFrame(data=data)
+    if df.empty:
+        df = pandas.DataFrame(columns=summary_keys)
 
     if 'sort' in flask.request.args:
         key = flask.request.args['sort']
@@ -146,7 +148,7 @@ def index():
                 else:
                     values.append((value, (float('nan'), float('nan'))))
             df[col] = values
-        elif isinstance(df[col].iloc[0], datetime.timedelta):
+        elif df[col].dtype.name == 'timedelta64[ns]':
             values = []
             for value in df[col]:
                 try:
