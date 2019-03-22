@@ -10,8 +10,70 @@
     .text-small {
       font-size: 12px;
     }
+    table th {
+      vertical-align: middle !important;
+    }
+    table.table-bordered td {
+      border:1px solid #212529 !important;
+    }
+    table.table-bordered th {
+      border:1px solid #212529 !important;
+    }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    function updateDisplay() {
+      var url = new URL(window.location);
+      hide_keys = url.searchParams.get('hide');
+      if (hide_keys == undefined) {
+        hide_keys = [];
+      } else {
+        hide_keys = hide_keys.split(',');
+      }
+      {% for key in summary_keys %}
+      {% set key_escaped = key.replace(' ', '-SPACE-').replace('/', '-SLASH-').replace('(', '-LP-').replace(')', '-RP-') %}
+      var selector = '.column_{{ key_escaped }}';
+      if (hide_keys.includes(selector)) {
+        $(selector).hide();
+        $('#legend_{{ key_escaped }}')[0].checked = false;
+      } else {
+        $(selector).show();
+        $('#legend_{{ key_escaped }}')[0].checked = true;
+      }
+      {% endfor %}
+    }
+
+    $(document).ready(function() {
+      updateDisplay();
+    });
+
+    function toggleDisplay(selector) {
+      var url = new URL(window.location);
+      hide_keys = url.searchParams.get('hide');
+      if (hide_keys == undefined) {
+        hide_keys = [];
+      } else {
+        hide_keys = hide_keys.split(',').filter(function (el) { return el != ''; });
+      }
+
+      if (hide_keys.includes(selector)) {
+        for (var i = 0; i < hide_keys.length; i++) {
+          if (hide_keys[i] === selector) {
+            hide_keys.splice(i, 1);
+          }
+        }
+      } else {
+        hide_keys.push(selector);
+      }
+
+      if (hide_keys.length == 0) {
+        window.history.pushState('', '', '/');
+      } else {
+        window.history.pushState('', '', '/?hide=' + hide_keys.join());
+      }
+      updateDisplay();
+    }
+  </script>
 </head>
 
 {% set args_log_dir = request.args.get('log_dir') %}
@@ -28,142 +90,153 @@
     Root Directory: <code>({{ root_dir }})</code>
   </h6>
 
-<style>
-table.table-bordered td {
-  border:1px solid #212529 !important;
-}
-table.table-bordered th {
-  border:1px solid #212529 !important;
-}
-</style>
-
-  <div class="mb-3">
-    <form class="form-group">
-      <input class="form-control" type="text" placeholder="Search (e.g., githash=='f766b97')" name="q" value="{{ request.args.q }}" />
-    </form>
-  </div>
-
-  <div class="card mb-3">
-    <div class="card-header"><code>summary</code></div>
-    <div class="card-body p-0 table-responsive">
-      <table class="table table-hover table-sm table-bordered text-center mb-0">
-        <tr>
-          <th class="bg-dark text-white" style="vertical-align: middle;">
-            #
-          </th>
-          <th class="bg-dark text-white" style="vertical-align: middle;">
-            {% if args_sort == '-log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q) }}">
-              <i class="fas fa-caret-up"></i>
-            </a>
-            <br/>
-            log_dir
-            <br/>
-            {% if args_sort is none or args_sort == 'log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, log_dir=args_log_dir, q=args_q) }}">
-              <i class="fas fa-caret-down"></i>
-            </a>
-          </th>
-          {% for key in summary_keys %}
-          {% if key in log_keys %}
-          {% set class = 'bg-primary' %}
-          {% set colspan = 2 %}
-          {% elif key in args_keys %}
-          {% set class = 'bg-success' %}
-          {% set colspan = 1 %}
-          {% else %}
-          {% set class = 'bg-danger' %}
-          {% set colspan = 1 %}
-          {% endif %}
-          <th class="{{ class }} text-white" style="vertical-align: middle;" colspan="{{ colspan }}">
-            {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q) }}">
-              <i class="fas fa-caret-up"></i>
-            </a>
-            <br/>
-            {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
-            <br/>
-            {% if args_sort == key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-            <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q) }}">
-              <i class="fas fa-caret-down"></i>
-            </a>
-          </th>
-          {% endfor %}
-        </tr>
-        {% for log_dir in summary_df.log_dir %}
-        {% if request.args.log_dir == log_dir %}
-        <tr class="table-active">
-        {% else %}
-        <tr>
-        {% endif %}
-          {% if request.args.log_dir == log_dir %}
-          <td>{{ loop.index }}</td>
-          {% else %}
-          <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q) }}">{{ loop.index }}</a></td>
-          {% endif %}
-
-          <td>{{ log_dir }}</td>
-
-          {% set summary = summary_df[summary_df.log_dir == log_dir].iloc[0] %}
-          {% for key in summary_keys %}
-          {% set value = summary[key] %}
-          {% if value is iterable and value is not string %}
-          <td>{{ value[0] }}</td><td>{{ value[1] }}</td>
-          {% else %}
-          <td><a href="{{ url_for(request.endpoint, q='%s==\'%s\''|format(key, value), log_dir=args_log_dir, sort=args_sort) }}">{{ value }}</a></td>
-          {% endif %}
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-  </div>
-
-  {% if request.args.log_dir %}
-
-  <script>
-    function toggleDisplay(selector) {
-      var element = $(selector);
-      if (element.attr('style')) {
-        element.show();
-      } else {
-        element.hide();
-      }
-    }
-  </script>
-
-  <div class="card mb-3" id='args'>
-    <div class="card-header">
-      <code>args</code>
-      <button onclick="toggleDisplay('#args > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
-    </div>
-    <div class="card-body table-responsive p-0" style="display: none;">
-      <table class="table table-sm table-bordered mb-0">
-        {% set summary = summary_df[summary_df.log_dir == request.args.log_dir].iloc[0] %}
-        {% for key in args_keys %}
-        <tr><th>{{ key }}</th><td>{{ summary[key] }}</td></tr>
-        {% endfor %}
-      </table>
-    </div>
-  </div>
-
   <div class="row">
-    {% for figure in figures %}
-    <div class="col-md-6">
-      <div class="card mb-3" id="{{ figure.replace('.', '-DOT-') }}">
+
+    <div class="col-md-2">
+      <div class="card">
         <div class="card-header">
-          <code>{{ figure }}</code>
-          <button onclick="toggleDisplay('#{{ figure.replace('.', '-DOT-') }} > .card-body');" class="btn btn-sm btn-secondary">Show / Hide</button>
+          Legend
         </div>
-        <div class="card-body" style="display: none;">
-          <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename=figure, timestamp=timestamp.strftime('%Y%m%d_%H%M%S')) }}" class="img-fluid" onerror="this.style.display='none'">
+        <div class="card-body">
+          <ul class="list-unstyled">
+            {% for key in summary_keys %}
+            {% set key_escaped = key.replace(' ', '-SPACE-').replace('/', '-SLASH-').replace('(', '-LP-').replace(')', '-RP-') %}
+            <li>
+              <input type="checkbox" id="legend_{{ key_escaped }}" onchange="toggleDisplay('.column_{{ key_escaped }}');" checked>
+              <label for="legend_{{ key_escaped }}">{{ key }}</label>
+            </li>
+            {% endfor %}
+          </ul>
         </div>
       </div>
     </div>
-    {% endfor %}
-  </div>
 
-  {% endif %}
+    <div class="col-md-10">
+
+      <div class="mb-3">
+        <form class="form-group">
+          <input class="form-control" type="text" placeholder="Search (e.g., githash=='f766b97')" name="q" value="{{ request.args.q }}" />
+        </form>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header"><code>summary</code></div>
+        <div class="card-body p-0 table-responsive">
+          <table class="table table-hover table-sm table-bordered text-center mb-0">
+            <tr>
+              <th class="bg-dark text-white">
+                #
+              </th>
+              <th class="bg-dark text-white">
+                {% if args_sort == '-log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q) }}">
+                  <i class="fas fa-caret-up"></i>
+                </a>
+                <br/>
+                log_dir
+                <br/>
+                {% if args_sort is none or args_sort == 'log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, log_dir=args_log_dir, q=args_q) }}">
+                  <i class="fas fa-caret-down"></i>
+                </a>
+              </th>
+              {% for key in summary_keys %}
+              {% if key in log_keys %}
+              {% set class = 'bg-primary' %}
+              {% set colspan = 2 %}
+              {% elif key in args_keys %}
+              {% set class = 'bg-success' %}
+              {% set colspan = 1 %}
+              {% else %}
+              {% set class = 'bg-danger' %}
+              {% set colspan = 1 %}
+              {% endif %}
+              {% set key_escaped = key.replace(' ', '-SPACE-').replace('/', '-SLASH-').replace('(', '-LP-').replace(')', '-RP-') %}
+              <th class="{{ class }} text-white column_{{ key_escaped }}" colspan="{{ colspan }}">
+                {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q) }}">
+                  <i class="fas fa-caret-up"></i>
+                </a>
+                <br/>
+                {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
+                <br/>
+                {% if args_sort == key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q) }}">
+                  <i class="fas fa-caret-down"></i>
+                </a>
+              </th>
+              {% endfor %}
+            </tr>
+            {% for log_dir in summary_df.log_dir %}
+            {% if request.args.log_dir == log_dir %}
+            <tr class="table-active">
+            {% else %}
+            <tr>
+            {% endif %}
+              {% if request.args.log_dir == log_dir %}
+              <td>{{ loop.index }}</td>
+              {% else %}
+              <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q) }}">{{ loop.index }}</a></td>
+              {% endif %}
+
+              <td>{{ log_dir }}</td>
+
+              {% set summary = summary_df[summary_df.log_dir == log_dir].iloc[0] %}
+              {% for key in summary_keys %}
+              {% set key_escaped = key.replace(' ', '-SPACE-').replace('/', '-SLASH-').replace('(', '-LP-').replace(')', '-RP-') %}
+              {% set value = summary[key] %}
+              {% if value is iterable and value is not string %}
+              <td class="column_{{ key_escaped }}">{{ value[0] }}</td><td class="column_{{ key_escaped }}">{{ value[1] }}</td>
+              {% else %}
+              <td class="column_{{ key_escaped }}">
+                <a href="{{ url_for(request.endpoint, q='%s==\'%s\''|format(key, value), log_dir=args_log_dir, sort=args_sort) }}">
+                  {{ value }}
+                </a>
+              </td>
+              {% endif %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      {% if request.args.log_dir %}
+
+      <div class="card mb-3" id='args'>
+        <div class="card-header">
+          <code>args</code>
+        </div>
+        <div class="card-body table-responsive p-0">
+          <table class="table table-sm table-bordered mb-0">
+            {% set summary = summary_df[summary_df.log_dir == request.args.log_dir].iloc[0] %}
+            {% for key in args_keys %}
+            <tr><th>{{ key }}</th><td>{{ summary[key] }}</td></tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        {% for figure in figures %}
+        <div class="col-md-6">
+          <div class="card mb-3" id="{{ figure.replace('.', '-DOT-') }}">
+            <div class="card-header">
+              <code>{{ figure }}</code>
+            </div>
+            <div class="card-body">
+              <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename=figure, timestamp=timestamp.strftime('%Y%m%d_%H%M%S')) }}" class="img-fluid" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% endif %}
+
+    </div>
+
+  </div>
 
 </div>
 
