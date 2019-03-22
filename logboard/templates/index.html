@@ -79,6 +79,7 @@
 {% set args_log_dir = request.args.get('log_dir') %}
 {% set args_sort = request.args.get('sort') %}
 {% set args_q = request.args.get('q') %}
+{% set args_hide = request.args.get('hide') %}
 
 <div class="container-fluid">
 
@@ -116,6 +117,15 @@
       <div class="mb-3">
         <form class="form-group">
           <input class="form-control" type="text" placeholder="Search (e.g., githash=='f766b97')" name="q" value="{{ request.args.q }}" />
+          {% if args_log_dir is not none %}
+          <input type="hidden" name="log_dir" value="{{ args_log_dir }}" />
+          {% endif %}
+          {% if args_sort is not none %}
+          <input type="hidden" name="sort" value="{{ args_sort }}" />
+          {% endif %}
+          {% if args_hide is not none %}
+          <input type="hidden" name="hide" value="{{ args_hide }}" />
+          {% endif %}
         </form>
       </div>
 
@@ -129,14 +139,14 @@
               </th>
               <th class="bg-dark text-white">
                 {% if args_sort == '-log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q) }}">
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-log_dir', log_dir=args_log_dir, q=args_q, hide=args_hide) }}">
                   <i class="fas fa-caret-up"></i>
                 </a>
                 <br/>
                 log_dir
                 <br/>
                 {% if args_sort is none or args_sort == 'log_dir' %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, log_dir=args_log_dir, q=args_q) }}">
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, log_dir=args_log_dir, q=args_q, hide=args_hide) }}">
                   <i class="fas fa-caret-down"></i>
                 </a>
               </th>
@@ -154,14 +164,14 @@
               {% set key_escaped = key.replace(' ', '-SPACE-').replace('/', '-SLASH-').replace('(', '-LP-').replace(')', '-RP-') %}
               <th class="{{ class }} text-white column_{{ key_escaped }}" colspan="{{ colspan }}">
                 {% if args_sort == '-' + key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q) }}">
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort='-' + key, log_dir=args_log_dir, q=args_q, hide=args_hide) }}">
                   <i class="fas fa-caret-up"></i>
                 </a>
                 <br/>
                 {{ key.replace('/', ' /').replace(' ', '<br/>') | safe }}
                 <br/>
                 {% if args_sort == key %}{% set disabled = 'disabled' %}{% else %}{% set disabled = '' %}{% endif %}
-                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q) }}">
+                <a class="btn btn-sm btn-light {{ disabled }}" href="{{ url_for(request.endpoint, sort=key, log_dir=args_log_dir, q=args_q, hide=args_hide) }}">
                   <i class="fas fa-caret-down"></i>
                 </a>
               </th>
@@ -176,7 +186,7 @@
               {% if request.args.log_dir == log_dir %}
               <td>{{ loop.index }}</td>
               {% else %}
-              <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q) }}">{{ loop.index }}</a></td>
+              <td><a href="{{ url_for(request.endpoint, log_dir=log_dir, sort=args_sort, q=args_q, hide=args_hide) }}">{{ loop.index }}</a></td>
               {% endif %}
 
               <td>{{ log_dir }}</td>
@@ -189,7 +199,7 @@
               <td class="column_{{ key_escaped }}">{{ value[0] }}</td><td class="column_{{ key_escaped }}">{{ value[1] }}</td>
               {% else %}
               <td class="column_{{ key_escaped }}">
-                <a href="{{ url_for(request.endpoint, q='%s==\'%s\''|format(key, value), log_dir=args_log_dir, sort=args_sort) }}">
+                <a href="{{ url_for(request.endpoint, q='%s==\'%s\''|format(key, value), log_dir=args_log_dir, sort=args_sort, hide=args_hide) }}">
                   {{ value }}
                 </a>
               </td>
