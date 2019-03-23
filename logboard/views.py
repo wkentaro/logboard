@@ -23,9 +23,16 @@ def get_config():
     }
 
     parser = ConfigParser()
-    parser.read('.logboard')
 
-    section = parser['logboard']
+    try:
+        parser.read('.logboard')
+    except IOError:
+        return config
+
+    try:
+        section = parser['logboard']
+    except KeyError:
+        return config
 
     try:
         config['-summary'] = set(filter(None, section['-summary'].split(',')))
