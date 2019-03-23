@@ -67,9 +67,9 @@
       }
 
       if (hide_keys.length == 0) {
-        window.history.pushState('', '', '/');
+        window.location.href = '/'
       } else {
-        window.history.pushState('', '', '/?hide=' + hide_keys.join());
+        window.location.href = '/?hide=' + hide_keys.join();
       }
       updateDisplay();
     }
