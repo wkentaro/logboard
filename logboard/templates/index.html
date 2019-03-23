@@ -67,9 +67,11 @@
       }
 
       if (hide_keys.length == 0) {
-        window.location.href = '/'
+        // window.location.href = '/'
+        window.history.pushState('', '', '/');
       } else {
-        window.location.href = '/?hide=' + hide_keys.join();
+        // window.location.href = '/?hide=' + hide_keys.join();
+        window.history.pushState('', '', '/?hide=' + hide_keys.join());
       }
       updateDisplay();
     }
