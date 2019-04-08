@@ -38,6 +38,13 @@ for each log (e.g., git-hash of the code, learning rate, training strategy).
 I expect this kind of feature will be included in `tensorboard` in the future.
 
 
+## Installation
+
+```bash
+pip install logboard
+```
+
+
 ## Usage
 
 ### Browser (`logboard`)
