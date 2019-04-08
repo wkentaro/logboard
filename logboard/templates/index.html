@@ -229,21 +229,6 @@
         </div>
       </div>
 
-      <div class="row">
-        {% for figure in figures %}
-        <div class="col-md-6">
-          <div class="card mb-3" id="{{ figure.replace('.', '-DOT-') }}">
-            <div class="card-header">
-              <code>{{ figure }}</code>
-            </div>
-            <div class="card-body">
-              <img src="{{ url_for('logs', log_dir=request.args.log_dir, filename=figure, timestamp=timestamp.strftime('%Y%m%d_%H%M%S')) }}" class="img-fluid" onerror="this.style.display='none'">
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-
       {% endif %}
 
     </div>

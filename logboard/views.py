@@ -18,8 +18,6 @@ app = flask.Flask('logboard')
 def get_config():
     config = {
         '-summary': set(),
-        'figure': ['loss.png'],
-        'scale': {},
     }
 
     parser = ConfigParser()
@@ -36,18 +34,6 @@ def get_config():
 
     try:
         config['-summary'] = set(filter(None, section['-summary'].split(',')))
-    except KeyError:
-        pass
-
-    try:
-        config['figure'] = filter(None, section['figure'].split(','))
-    except KeyError:
-        pass
-
-    try:
-        for s in filter(None, section['scale'].split(',')):
-            key, value = s.split('=')
-            config['scale'][key] = float(value)
     except KeyError:
         pass
 
@@ -139,17 +125,12 @@ def index():
     for col in df.columns:
         if col.endswith(' (min)') or col.endswith(' (max)'):
             key = col[:-6]
-            if key in config['scale']:
-                scale = config['scale'][key]
-                stat_template = '{:.1f}'
-            else:
-                scale = 1.0
-                stat_template = '{:.2g}'
+            stat_template = '{:.2g}'
             values = []
             for value in df[col].values:
                 if isinstance(value, tuple):
                     values.append((
-                        stat_template.format(value[0] * scale),
+                        stat_template.format(value[0]),
                         value[1],
                     ))
                 else:
@@ -193,7 +174,6 @@ def index():
         summary_keys=summary_keys,
         args_keys=args_keys,
         log_keys=log_keys,
-        figures=config['figure'],
     )
 
 
