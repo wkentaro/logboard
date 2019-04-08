@@ -7,9 +7,9 @@
 </h4>
 
 <div align="center">
-  <a href="https://travis-ci.com/wkentaro/logboard">
-    <img src="https://travis-ci.com/wkentaro/logboard.svg?token=zM5rExyvuRoJThsnqHAF&branch=master">
-  </a>
+  <a href="https://pypi.python.org/pypi/logboard"><img src="https://img.shields.io/pypi/v/logboard.svg"></a>
+  <a href="https://pypi.org/project/logboard"><img src="https://img.shields.io/pypi/pyversions/logboard.svg"></a>
+  <a href="https://travis-ci.org/wkentaro/logboard"><img src="https://travis-ci.org/wkentaro/logboard.svg?branch=master"></a>
 
   <br/>
 
