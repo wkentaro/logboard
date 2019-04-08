@@ -47,7 +47,7 @@ pip install logboard
 
 ## Usage
 
-### Browser (`logboard --logdir logs`)
+### Browser (`logboard --logdir logs/`)
 
 ```bash
 $ cd examples
@@ -75,7 +75,7 @@ $ logboard --logdir logs/  # like tensorboard --logdir logs/
 ```
 
 
-### Terminal (`logtable --logdir logs`)
+### Terminal (`logtable --logdir logs/`)
 
 ```bash
 $ cd examples
