@@ -19,7 +19,7 @@ def main():
 
     config = get_config()
     root_dir = osp.abspath(args.logdir)
-    df, summary_keys, args_keys, log_keys = parse(config, root_dir)
+    df, summary_keys, _, _ = parse(config, root_dir)
 
     print(' * Log directory: {}'.format(args.logdir))
 
@@ -29,13 +29,7 @@ def main():
     for key in summary_keys:
         if key in args.hide:
             continue
-        if key in args_keys:
-            headers.append(key)
-        elif key in log_keys:
-            headers.append(key)
-            headers.append('')
-        else:
-            headers.append(key)
+        headers.append(key)
 
     for i, header in enumerate(headers):
         headers[i] = header.replace('/', '/\n')
@@ -48,8 +42,7 @@ def main():
                 continue
             if isinstance(x, tuple):
                 assert len(x) == 2
-                row.append(x[0])
-                row.append(x[1])
+                row.append('{}\n{}'.format(*x))
             else:
                 row.append(x)
         rows.append(row)
