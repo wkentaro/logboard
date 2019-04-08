@@ -29,11 +29,11 @@ setup(
     version=version,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['flask', 'pandas'],
+    install_requires=['flask', 'pandas', 'tabular'],
     author='Kentaro Wada',
     author_email='www.kentaro.wada@gmail.com',
     description='Monitor and Compare Logs on Browser.',
-    url='http://github.com/wkentaro/chainer-logs',
+    url='http://github.com/wkentaro/logboard',
     license='MIT',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -46,5 +46,10 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
-    entry_points={'console_scripts': ['logboard=logboard.cli:main']},
+    entry_points={
+        'console_scripts': [
+            'logboard=logboard.cli.logboard:main',
+            'logtable=logboard.cli.logtable:main',
+        ],
+    },
 )

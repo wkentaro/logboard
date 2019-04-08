@@ -4,11 +4,10 @@ import os
 import os.path as osp
 import re
 
-import flask
 import pandas
 
 
-def parse(config, root_dir):
+def parse(config, root_dir, **kwargs):
     log_dirs = sorted(os.listdir(root_dir))
 
     # params
@@ -73,8 +72,8 @@ def parse(config, root_dir):
     if df.empty:
         df = pandas.DataFrame(columns=summary_keys)
 
-    if 'sort' in flask.request.args:
-        key = flask.request.args['sort']
+    if 'sort' in kwargs:
+        key = kwargs['sort']
         ascending = True
         if key.startswith('-'):
             key = key[1:]
@@ -109,17 +108,11 @@ def parse(config, root_dir):
         else:
             df[col] = df[col].astype(str)
 
-    if 'q' in flask.request.args:
+    if 'q' in kwargs:
         try:
-            df = df.query(flask.request.args['q'])
+            df = df.query(kwargs['q'])
         except Exception:
             pass
-
-    if 'log_dir' in flask.request.args and \
-            flask.request.args['log_dir'] not in df.log_dir.values:
-        request_args = dict(flask.request.args)
-        request_args.pop('log_dir')
-        return flask.redirect(flask.url_for('index', **request_args))
 
     for pattern in config['-summary']:
         for key in summary_keys[:]:

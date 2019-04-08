@@ -4,7 +4,7 @@ import os
 import socket
 import sys
 
-from .views import app
+from ..views import app
 
 
 @contextlib.contextmanager
