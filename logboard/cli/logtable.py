@@ -34,6 +34,9 @@ def main():
     for i, header in enumerate(headers):
         headers[i] = header.replace('/', '/\n')
 
+    if df.empty:
+        df.columns = summary_keys
+
     rows = []
     for index, df_row in df[summary_keys].iterrows():
         row = []
