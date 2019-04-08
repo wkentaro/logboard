@@ -13,7 +13,8 @@
 
   <br/>
 
-  <img src=".readme/overview.png" width="60%">
+  <img src=".readme/browser.png" width="60%">
+  <img src=".readme/terminal.png" width="60%" />
 </div>
 
 
