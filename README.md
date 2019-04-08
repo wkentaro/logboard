@@ -3,7 +3,7 @@
 </h1>
 
 <h4 align="center">
-  Monitor and Compare Logs on Browser.
+  Monitor and Compare Logs on Browser/Terminal.
 </h4>
 
 <div align="center">
@@ -39,6 +39,8 @@ I expect this kind of feature will be included in `tensorboard` in the future.
 
 ## Usage
 
+### Browser
+
 ```bash
 $ cd examples
 
@@ -62,4 +64,23 @@ $ cat logs/20190310_093252.724597/args
 }
 
 $ logboard --logdir logs/  # like tensorboard --logdir logs/
+```
+
+
+### Terminal
+
+```bash
+$ cd examples
+
+$ logtable --hide updated_at epoch hostname class_ids 'main/loss_quaternion (min)' 'main/loss_translation (min)' 'validation/main/loss_quaternion (min)' 'validation/main/loss_translation (min)'
+ * Log directory: logs
++----+------------------------+-------------+----------------+-----------+-------+--------------+-----------+---------------+----------+
+|    |        log_dir         |  iteration  |  elapsed_time  |  githash  |  lr   |    main/     |           |  validation/  |          |
+|    |                        |             |                |           |       |  loss (min)  |           |     main/     |          |
+|    |                        |             |                |           |       |              |           |  loss (min)   |          |
++====+========================+=============+================+===========+=======+==============+===========+===============+==========+
+| 0  | 20190310_093252.724597 |    1740     |    1:47:02     |  b48ce48  | 0.001 |    0.0088    | (1, 1580) |     0.18      | (0, 880) |
++----+------------------------+-------------+----------------+-----------+-------+--------------+-----------+---------------+----------+
+| 1  | 20190310_093829.691289 |    1720     |    1:45:37     |  f766b97  | 0.001 |    0.012     | (1, 1620) |     0.19      | (0, 440) |
++----+------------------------+-------------+----------------+-----------+-------+--------------+-----------+---------------+----------+
 ```
