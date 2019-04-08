@@ -29,7 +29,7 @@ setup(
     version=version,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=['flask', 'pandas', 'tabular'],
+    install_requires=['flask', 'pandas', 'tabulate'],
     author='Kentaro Wada',
     author_email='www.kentaro.wada@gmail.com',
     description='Monitor and Compare Logs on Browser.',
