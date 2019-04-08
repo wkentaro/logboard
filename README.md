@@ -40,7 +40,7 @@ I expect this kind of feature will be included in `tensorboard` in the future.
 
 ## Usage
 
-### Browser
+### Browser (`logboard`)
 
 ```bash
 $ cd examples
@@ -68,7 +68,7 @@ $ logboard --logdir logs/  # like tensorboard --logdir logs/
 ```
 
 
-### Terminal
+### Terminal (`logtable`)
 
 ```bash
 $ cd examples
