@@ -68,9 +68,7 @@ def parse(config, root_dir, **kwargs):
     summary_keys += sorted(args_keys)
     summary_keys += sorted(log_keys)
 
-    df = pandas.DataFrame(data=data)
-    if df.empty:
-        df = pandas.DataFrame(columns=summary_keys)
+    df = pandas.DataFrame(data=data, columns=['log_dir'] + summary_keys)
 
     if 'sort' in kwargs:
         key = kwargs['sort']
