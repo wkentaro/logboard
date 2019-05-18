@@ -2,6 +2,8 @@
 
 import argparse
 import os.path as osp
+import re
+import sys
 
 import tabulate
 
@@ -15,6 +17,7 @@ def main():
     )
     parser.add_argument('--logdir', default='logs', help='logs dir')
     parser.add_argument('--hide', nargs='+', default=[], help='hide keys')
+    parser.add_argument('--keys', action='store_true')
     args = parser.parse_args()
 
     config = get_config()
@@ -25,12 +28,21 @@ def main():
 
     summary_keys = ['log_dir'] + summary_keys
 
-    headers = []
+    summary_keys_ = []
     for key in summary_keys:
-        if key in args.hide:
-            continue
-        headers.append(key)
+        for pattern in args.hide:
+            if re.match(pattern, key):
+                break
+        else:
+            summary_keys_.append(key)
+    summary_keys = summary_keys_
 
+    if args.keys:
+        for key in summary_keys:
+            print(key)
+        sys.exit(0)
+
+    headers = summary_keys[:]
     for i, header in enumerate(headers):
         headers[i] = header.replace('/', '/\n')
 
@@ -41,8 +53,6 @@ def main():
     for index, df_row in df[summary_keys].iterrows():
         row = []
         for key, x in zip(summary_keys, df_row):
-            if key in args.hide:
-                continue
             if isinstance(x, tuple):
                 assert len(x) == 2
                 row.append('{}\n{}'.format(*x))
