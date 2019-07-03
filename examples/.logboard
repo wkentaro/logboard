@@ -1,2 +1,0 @@
-[logboard]
--summary=out,timestamp,loglevel,gpu,seed,lr .*,.*main/loss.*(max)

@@ -4,10 +4,10 @@ import argparse
 import os.path as osp
 import re
 import sys
+import warnings
 
 import tabulate
 
-from ..config import get_config
 from ..parser import parse
 
 
@@ -16,13 +16,14 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument('--logdir', default='logs', help='logs dir')
-    parser.add_argument('--hide', nargs='+', default=[], help='hide keys')
+    parser.add_argument(
+        '--filter', '-f', nargs='+', default=[], help='filter keys'
+    )
     parser.add_argument('--keys', action='store_true')
     args = parser.parse_args()
 
-    config = get_config()
     root_dir = osp.abspath(args.logdir)
-    df, summary_keys, _, _ = parse(config, root_dir)
+    df, summary_keys, _, _ = parse(root_dir)
 
     print(' * Log directory: {}'.format(args.logdir))
 
@@ -30,7 +31,7 @@ def main():
 
     summary_keys_ = []
     for key in summary_keys:
-        for pattern in args.hide:
+        for pattern in args.filter:
             if re.match(pattern, key):
                 break
         else:

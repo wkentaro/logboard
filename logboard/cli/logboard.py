@@ -27,9 +27,13 @@ def main():
     parser.add_argument('--host', default='0.0.0.0', help='host')
     parser.add_argument('--port', default=None, help='port')
     parser.add_argument('--debug', action='store_true', help='debug mode')
+    parser.add_argument(
+        '--filter', '-f', nargs='+', default=[], help='filter keys'
+    )
     args = parser.parse_args()
 
     app.config['logdir'] = args.logdir
+    app.config['filter'] = args.filter
 
     os.environ['FLASK_ENV'] = 'development'
 

@@ -5,7 +5,7 @@ echo_bold () {
 }
 
 echo_bold "==> Running Terminal Example (logtable)"
-logtable --logdir logs
+logtable --logdir logs --filter out timestamp loglevel gpu seed 'lr .*' '.*main/loss.*(max)' '.*loss_.*'
 
 echo_bold "==> Running Browser Example (logbrowser)"
-logboard --logdir logs
+logboard --logdir logs --filter out timestamp loglevel gpu seed 'lr .*' '.*main/loss.*(max)' '.*loss_.*'

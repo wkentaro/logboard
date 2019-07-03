@@ -7,7 +7,7 @@ import re
 import pandas
 
 
-def parse(config, root_dir, **kwargs):
+def parse(root_dir, **kwargs):
     log_dirs = sorted(os.listdir(root_dir))
 
     # params
@@ -111,10 +111,5 @@ def parse(config, root_dir, **kwargs):
             df = df.query(kwargs['q'])
         except Exception:
             pass
-
-    for pattern in config['-summary']:
-        for key in summary_keys[:]:
-            if re.match(pattern, key):
-                summary_keys.remove(key)
 
     return df, summary_keys, args_keys, log_keys

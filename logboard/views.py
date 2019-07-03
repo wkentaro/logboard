@@ -1,9 +1,9 @@
 import datetime
 import os.path as osp
+import re
 
 import flask
 
-from .config import get_config
 from .parser import parse
 
 
@@ -12,9 +12,17 @@ app = flask.Flask('logboard')
 
 @app.route('/')
 def index():
-    config = get_config()
     root_dir = osp.abspath(app.config['logdir'])
-    df, summary_keys, args_keys, log_keys = parse(config, root_dir)
+    df, summary_keys, args_keys, log_keys = parse(root_dir)
+
+    summary_keys_ = []
+    for key in summary_keys:
+        for pattern in app.config['filter']:
+            if re.match(pattern, key):
+                break
+        else:
+            summary_keys_.append(key)
+    summary_keys = summary_keys_
 
     if 'log_dir' in flask.request.args and \
             flask.request.args['log_dir'] not in df.log_dir.values:
