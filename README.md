@@ -52,10 +52,6 @@ pip install logboard
 ```bash
 $ cd examples
 
-$ cat .logboard
-[logboard]
--summary=out,timestamp,loglevel,gpu,seed,lr .*,.*main/loss.*(max)
-
 $ cat logs/20190310_093252.724597/args
 {
     "loglevel": "info",
@@ -71,7 +67,8 @@ $ cat logs/20190310_093252.724597/args
     "githash": "b48ce48"
 }
 
-$ logboard --logdir logs/  # like tensorboard --logdir logs/
+# similar to tensorboard --logdir logs/
+$ logboard --logdir logs/ --filter out timestamp loglevel gpu seed 'lr .*' '.*main/loss.*(max)' '.*loss_.*'
 ```
 
 
@@ -80,7 +77,7 @@ $ logboard --logdir logs/  # like tensorboard --logdir logs/
 ```bash
 $ cd examples
 
-$ logtable --hide updated_at epoch hostname class_ids 'main/loss_quaternion (min)' 'main/loss_translation (min)' 'validation/main/loss_quaternion (min)' 'validation/main/loss_translation (min)'
+$ logtable --logdir logs --filter out timestamp loglevel gpu seed 'lr .*' '.*main/loss.*(max)' '.*loss_.*'
  * Log directory: logs
 +----+------------------------+-------------+----------------+-----------+-------+--------------+-----------+---------------+----------+
 |    |        log_dir         |  iteration  |  elapsed_time  |  githash  |  lr   |    main/     |           |  validation/  |          |
