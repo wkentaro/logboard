@@ -64,7 +64,7 @@ def main():
     table = tabulate.tabulate(
         tabular_data=rows,
         headers=headers,
-        tablefmt='grid',
+        tablefmt='fancy_grid',
         stralign='center',
         showindex=True,
         disable_numparse=True,
