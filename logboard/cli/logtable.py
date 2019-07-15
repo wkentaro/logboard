@@ -24,7 +24,7 @@ def main():
         '--significant-figures',
         '-s',
         type=int,
-        default=2,
+        default=3,
         help='significant figures',
     )
     args = parser.parse_args()

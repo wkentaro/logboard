@@ -21,7 +21,7 @@ def parse(root_dir, **kwargs):
     q: str, optional
         Query of log keys.
     float_format: str, optional.
-        Float value formatting (default: '{:.2g}').
+        Float value formatting (default: '{:.3g}').
 
     Returns
     -------
@@ -37,7 +37,7 @@ def parse(root_dir, **kwargs):
 
     sort = kwargs.get('sort', None)
     q = kwargs.get('q', None)
-    float_format = kwargs.get('float_format', '{:.2g}')
+    float_format = kwargs.get('float_format', '{:.3g}')
 
     log_dirs = sorted(os.listdir(root_dir))
 
