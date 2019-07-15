@@ -20,10 +20,19 @@ def main():
         '--filter', '-f', nargs='+', default=[], help='filter keys'
     )
     parser.add_argument('--keys', action='store_true')
+    parser.add_argument(
+        '--significant-figures',
+        '-s',
+        type=int,
+        default=2,
+        help='significant figures',
+    )
     args = parser.parse_args()
 
+    float_format = '{:.%dg}' % args.significant_figures
+
     root_dir = osp.abspath(args.logdir)
-    df, summary_keys, _, _ = parse(root_dir)
+    df, summary_keys, _, _ = parse(root_dir, float_format=float_format)
 
     print(' * Log directory: {}'.format(args.logdir))
 

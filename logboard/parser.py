@@ -8,6 +8,37 @@ import pandas
 
 
 def parse(root_dir, **kwargs):
+    """parse(root_dir, sort=None, q=None)
+
+    Parse log directory to create a log table.
+
+    Parameters
+    ----------
+    root_dir: str
+        Root directory that contains logs.
+    sort: str, optional
+        Sort logs.
+    q: str, optional
+        Query of log keys.
+    float_format: str, optional.
+        Float value formatting (default: '{:.2g}').
+
+    Returns
+    -------
+    df: pandas.DataFrame
+        Log table.
+    summary_keys: list of str
+        List of keys from summary.
+    args_keys: list of str
+        List of keys from args.
+    log_keys: list of str
+        List of keys from log.
+    """
+
+    sort = kwargs.get('sort', None)
+    q = kwargs.get('q', None)
+    float_format = kwargs.get('float_format', '{:.2g}')
+
     log_dirs = sorted(os.listdir(root_dir))
 
     # params
@@ -70,8 +101,8 @@ def parse(root_dir, **kwargs):
 
     df = pandas.DataFrame(data=data, columns=['log_dir'] + summary_keys)
 
-    if 'sort' in kwargs:
-        key = kwargs['sort']
+    if sort is not None:
+        key = sort
         ascending = True
         if key.startswith('-'):
             key = key[1:]
@@ -82,12 +113,11 @@ def parse(root_dir, **kwargs):
     for col in df.columns:
         if col.endswith(' (min)') or col.endswith(' (max)'):
             key = col[:-6]
-            stat_template = '{:.2g}'
             values = []
             for value in df[col].values:
                 if isinstance(value, tuple):
                     values.append((
-                        stat_template.format(value[0]),
+                        float_format.format(value[0]),
                         value[1],
                     ))
                 else:
@@ -106,9 +136,9 @@ def parse(root_dir, **kwargs):
         else:
             df[col] = df[col].astype(str)
 
-    if 'q' in kwargs:
+    if q is not None:
         try:
-            df = df.query(kwargs['q'])
+            df = df.query(q)
         except Exception:
             pass
 
