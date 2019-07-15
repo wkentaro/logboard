@@ -27,12 +27,18 @@ def main():
         default=3,
         help='significant figures',
     )
+    parser.add_argument(
+        '--index', '-i', type=int, nargs='+', help='index filtering'
+    )
     args = parser.parse_args()
 
     float_format = '{:.%dg}' % args.significant_figures
 
     root_dir = osp.abspath(args.logdir)
     df, summary_keys, _, _ = parse(root_dir, float_format=float_format)
+
+    if args.index:
+        df = df.ix[args.index]
 
     print(' * Log directory: {}'.format(args.logdir))
 
