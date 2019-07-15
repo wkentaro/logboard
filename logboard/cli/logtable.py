@@ -37,7 +37,7 @@ def main():
     root_dir = osp.abspath(args.logdir)
     df, summary_keys, _, _ = parse(root_dir, float_format=float_format)
 
-    if args.index:
+    if args.index is not None:
         df = df.ix[args.index]
 
     print(' * Log directory: {}'.format(args.logdir))
@@ -58,7 +58,7 @@ def main():
             print(key)
         sys.exit(0)
 
-    headers = summary_keys[:]
+    headers = [''] + summary_keys[:]
     for i, header in enumerate(headers):
         headers[i] = header.replace('/', '/\n')
 
@@ -67,7 +67,7 @@ def main():
 
     rows = []
     for index, df_row in df[summary_keys].iterrows():
-        row = []
+        row = [index]
         for key, x in zip(summary_keys, df_row):
             if isinstance(x, tuple):
                 assert len(x) == 2
@@ -81,7 +81,7 @@ def main():
         headers=headers,
         tablefmt='fancy_grid',
         stralign='center',
-        showindex=True,
+        showindex=False,
         disable_numparse=True,
     )
     print(table)
