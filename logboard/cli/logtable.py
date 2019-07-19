@@ -58,7 +58,11 @@ def main():
             print(key)
         sys.exit(0)
 
-    headers = [''] + summary_keys[:]
+    headers = ['']
+    for key in summary_keys:
+        headers.append(key)
+        if key.endswith(' (min)') or key.endswith(' (max)'):
+            headers.append('')
     for i, header in enumerate(headers):
         headers[i] = header.replace('/', '/\n')
 
@@ -71,7 +75,8 @@ def main():
         for key, x in zip(summary_keys, df_row):
             if isinstance(x, tuple):
                 assert len(x) == 2
-                row.append('{}\n{}'.format(*x))
+                row.append(x[0])
+                row.append(x[1])
             else:
                 row.append(x)
         rows.append(row)
