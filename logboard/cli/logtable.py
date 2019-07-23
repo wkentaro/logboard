@@ -4,6 +4,7 @@ import argparse
 import os.path as osp
 import re
 import sys
+import textwrap
 import warnings
 
 import tabulate
@@ -15,9 +16,18 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument('--logdir', default='logs', help='logs dir')
     parser.add_argument(
-        '--filter', '-f', nargs='+', default=[], help='filter keys'
+        '--logdir',
+        '-l',
+        default='logs',
+        help='logs dir',
+    )
+    parser.add_argument(
+        '--filter',
+        '-f',
+        nargs='+',
+        default=[],
+        help='filter keys',
     )
     parser.add_argument('--keys', action='store_true')
     parser.add_argument(
@@ -28,7 +38,18 @@ def main():
         help='significant figures',
     )
     parser.add_argument(
-        '--index', '-i', type=int, nargs='+', help='index filtering'
+        '--index',
+        '-i',
+        type=int,
+        nargs='+',
+        help='index filtering',
+    )
+    parser.add_argument(
+        '--column',
+        '-c',
+        type=int,
+        default=30,
+        help='maximum column width (0 for infinite)',
     )
     args = parser.parse_args()
 
@@ -75,10 +96,15 @@ def main():
         for key, x in zip(summary_keys, df_row):
             if isinstance(x, tuple):
                 assert len(x) == 2
-                row.append(x[0])
-                row.append(x[1])
             else:
-                row.append(x)
+                x = [x]
+            for xi in x:
+                xi = str(xi)
+                if args.column > 0:
+                    xi = textwrap.wrap(xi, width=args.column)
+                else:
+                    xi = [xi]
+                row.append('\n'.join(xi))
         rows.append(row)
 
     table = tabulate.tabulate(
