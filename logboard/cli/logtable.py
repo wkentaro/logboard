@@ -51,12 +51,17 @@ def main():
         default=30,
         help='maximum column width (0 for infinite)',
     )
+    parser.add_argument(
+        '--multi-column',
+        action='store_true',
+        help='prefer multi-column to vertically shorten the table',
+    )
     args = parser.parse_args()
 
     float_format = '{:.%dg}' % args.significant_figures
 
     root_dir = osp.abspath(args.logdir)
-    df, summary_keys, _, _ = parse(root_dir, float_format=float_format)
+    df, summary_keys, _, log_keys = parse(root_dir, float_format=float_format)
 
     if args.index is not None:
         df = df.ix[args.index]
@@ -79,9 +84,12 @@ def main():
             print(key)
         sys.exit(0)
 
-    headers = [''] + summary_keys[:]
-    for i, header in enumerate(headers):
-        headers[i] = header.replace('/', '/\n')
+    headers = ['']
+    for key in summary_keys:
+        key_short = key.replace('/', '/\n')
+        headers.append(key_short)
+        if args.multi_column and key in log_keys:
+            headers.append('')
 
     if df.empty:
         df.columns = summary_keys
@@ -92,10 +100,15 @@ def main():
         for key, x in zip(summary_keys, df_row):
             if isinstance(x, tuple):
                 assert len(x) == 2
-                x = [str(xi) for xi in x]
+                if args.multi_column:
+                    row.extend(x)
+                else:
+                    x = '\n'.join(str(xi) for xi in x)
+                    row.append(x)
             else:
                 x = textwrap.wrap(x, width=args.column) if args.column else [x]
-            row.append('\n'.join(x))
+                x = '\n'.join(x)
+                row.append(x)
         rows.append(row)
 
     table = tabulate.tabulate(
