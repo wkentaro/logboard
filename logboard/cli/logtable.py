@@ -106,6 +106,7 @@ def main():
                     x = '\n'.join(str(xi) for xi in x)
                     row.append(x)
             else:
+                x = str(x)
                 x = textwrap.wrap(x, width=args.column) if args.column else [x]
                 x = '\n'.join(x)
                 row.append(x)
