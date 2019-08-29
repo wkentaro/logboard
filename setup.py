@@ -9,7 +9,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-version = '0.5.7'
+version = '0.5.8'
 
 
 if sys.argv[1] == 'release':
@@ -38,6 +38,7 @@ def get_long_description():
 
     try:
         import github2pypi
+
         return github2pypi.replace_url(
             slug='wkentaro/logboard', content=long_description
         )
@@ -69,7 +70,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
     ],
     entry_points={
         'console_scripts': [
