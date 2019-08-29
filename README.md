@@ -9,7 +9,7 @@
 <div align="center">
   <a href="https://pypi.python.org/pypi/logboard"><img src="https://img.shields.io/pypi/v/logboard.svg"></a>
   <a href="https://pypi.org/project/logboard"><img src="https://img.shields.io/pypi/pyversions/logboard.svg"></a>
-  <a href="https://travis-ci.com/wkentaro/logboard"><img src="https://travis-ci.com/wkentaro/logboard.svg?branch=master"></a>
+  <a href="https://github.com/wkentaro/logboard/actions"><img src="https://github.com/wkentaro/logboard/workflows/CI/badge.svg"></a>
 
   <br/>
 
