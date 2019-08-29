@@ -1,1 +1,2 @@
-recursive-include chainerlg/templates *
+include README.md
+recursive-include logboard/templates *
