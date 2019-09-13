@@ -86,8 +86,14 @@ def main():
 
     headers = ['']
     for key in summary_keys:
-        key_short = key.replace('/', '/\n')
-        headers.append(key_short)
+        key_splits = key.replace('/', '/\n').splitlines()
+        if args.column:
+            key_splits = [
+                x for key_split in key_splits
+                for x in textwrap.wrap(key_split, width=args.column)
+            ]
+        key = '\n'.join(key_splits)
+        headers.append(key)
         if args.multi_column and key in log_keys:
             headers.append('')
 
