@@ -86,7 +86,7 @@ def main():
 
     headers = ['']
     for key in summary_keys:
-        key_splits = key.replace('/', '/\n').split('_', '_\n').splitlines()
+        key_splits = key.replace('/', '/\n').replace('_', '_\n').splitlines()
         if args.column:
             key_splits = [
                 x for key_split in key_splits
