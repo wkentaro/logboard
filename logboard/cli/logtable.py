@@ -64,7 +64,7 @@ def main():
     df, summary_keys, _, log_keys = parse(root_dir, float_format=float_format)
 
     if args.index is not None:
-        df = df.ix[args.index]
+        df = df.iloc[args.index]
 
     print(' * Log directory: {}'.format(args.logdir))
 
